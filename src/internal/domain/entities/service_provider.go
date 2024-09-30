@@ -5,8 +5,8 @@ import (
 )
 
 type ServiceProvider struct {
-	 ServiceId uuid.UUID `gorm:"column: ServiceId"`
-	 ProviderId uuid.UUID `gorm:"column: ProviderId"`
+	 ServiceId uuid.UUID `gorm:"column:ServiceId"`
+	 ProviderId uuid.UUID `gorm:"column:ProviderId"`
 	 Service *Service
 	 Provider *User
 

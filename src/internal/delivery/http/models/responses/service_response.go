@@ -22,6 +22,7 @@ func ToServiceResponse(data *entities.Service) *ServiceResponse {
 		Id:          data.ID,
 		Name: data.Name,
 		Description: data.Description,
+		Category: ToServiceCategoryResponse(data.Category),
 		Price: ToServicePriceResponse(data.Price),
 	}
 }

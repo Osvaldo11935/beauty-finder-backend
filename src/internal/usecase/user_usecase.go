@@ -36,7 +36,7 @@ func (uc *UserUseCase) InsertServiceProvided(userId uuid.UUID, serviceIds []uuid
 
 	findErr := uc.Repo.Query().
 		Preload("ServicesProvided").
-		First(user, "Id", userId).Error
+		First(&user, "Id", userId).Error
 
 	if findErr != nil {
 		return errors.UnknownCreateUserError(findErr.Error())
@@ -44,11 +44,11 @@ func (uc *UserUseCase) InsertServiceProvided(userId uuid.UUID, serviceIds []uuid
 
 	user.SetServicesProvided(serviceIds)
 	
-	removeErr := uc.Repo.Remove(user.ServicesProvided)
+	uc.Repo.Remove(user.ServicesProvided)
 
-	if removeErr != nil {
-		return errors.UnknownDeleteUserError(removeErr.Error())
-	}
+	// if removeErr != nil {
+	// 	return errors.UnknownDeleteUserError(removeErr.Error())
+	// }
 
 	createErr := uc.Repo.Insert(user.ServicesProvided)
 	if createErr != nil {
