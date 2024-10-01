@@ -7,19 +7,21 @@ import (
 	"src/internal/persistence/database"
 	"src/internal/router"
 	"src/internal/setup"
+	"src/internal/usecase"
 )
 
 func main() {
-    config, configErr := configs.LoadConfig()
 
+    config, configErr := configs.LoadConfig()
 	if configErr != nil {
-		fmt.Print("Erro ao carregar as configurações", configErr)
+		fmt.Println("Erro ao carregar as configurações:", configErr)
+		return
 	}
 
 	_, connectErr := database.Connect()
-     
 	if connectErr != nil {
-		fmt.Print("Erro ao conectar no banco de dados", connectErr)
+		fmt.Println("Erro ao conectar no banco de dados:", connectErr)
+		return
 	}
 
 	database.RunMigration()
@@ -29,16 +31,20 @@ func main() {
     useCaseSetup := setup.NewUseCaseSetup(repositorySetup)
 	handlerSetup := setup.NewHandlerSetup(useCaseSetup)
 
-	route := router.NewRoute(handlerSetup)
+	pool := usecase.NewPool()
+	go pool.Start()
+ 
+	route := router.NewRoute(handlerSetup, pool)
 
 	server := &http.Server{
 		Addr: ":"+ config.ServerPort,
 		Handler: route,
 	}
 
-	serverErr  := server.ListenAndServe()
+	fmt.Println("Servidor iniciado na porta", config.ServerPort)
+	serverErr := server.ListenAndServe()
 
 	if serverErr != nil {
-		fmt.Print(serverErr)
+		fmt.Println("Erro no servidor:", serverErr)
 	}
 }

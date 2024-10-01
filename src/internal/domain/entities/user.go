@@ -4,7 +4,7 @@ import (
 	"src/internal/domain/primitives"
 
 	"github.com/google/uuid"
-	"golang.org/x/net/websocket"
+	"github.com/gorilla/websocket"
 )
 
 type User struct {
@@ -67,5 +67,18 @@ func (s *User) SetServicesProvided(serviceIds []uuid.UUID) {
 			ProviderId: s.ID,
 		}
 		s.ServicesProvided = append(s.ServicesProvided, &req)
+	}
+}
+
+func (s *User) SendMessage(message *Message) error {
+	if s.Conn != nil {
+		return s.Conn.WriteJSON(message)
+	}
+	return nil
+}
+
+func (s *User) CloseConnection() {
+	if s.Conn != nil {
+		s.Conn.Close()
 	}
 }

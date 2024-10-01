@@ -3,11 +3,11 @@ package router
 import (
 	"src/internal/router/route_group"
 	"src/internal/setup"
-
+	"src/internal/usecase"
 	"github.com/gin-gonic/gin"
 )
 
-func NewRoute(setup *setup.HandlerSetup) *gin.Engine {
+func NewRoute(setup *setup.HandlerSetup, pool *usecase.Pool) *gin.Engine {
 	router := gin.Default()
 
 	baseRoute := router.Group("/api")
@@ -23,6 +23,7 @@ func NewRoute(setup *setup.HandlerSetup) *gin.Engine {
 	route_group.NewServicePriceRouteGroup(baseRoute, *setup)
 	route_group.NewServiceRouteGroup(baseRoute, *setup)
 	route_group.NewUserRouteGroup(baseRoute, *setup)
+	route_group.NewChatRouteGroup(baseRoute, &setup.UserHandler.UseCase, pool)
 
 	return router
 }

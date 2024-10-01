@@ -4,7 +4,7 @@ import (
 	"src/internal/domain/entities"
 
 	"github.com/google/uuid"
-	"golang.org/x/net/websocket"
+	"github.com/gorilla/websocket"
 )
 
 type UserResponse struct {
