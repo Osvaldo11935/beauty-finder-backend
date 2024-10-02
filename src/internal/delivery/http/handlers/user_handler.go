@@ -7,6 +7,7 @@ import (
 	models_responses "src/internal/delivery/http/models/responses"
 	"src/internal/domain/object_values"
 	"src/internal/usecase"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -126,6 +127,22 @@ func(handler UserHandler) FindUserByServiceId(ctx *gin.Context){
 	resp := models_responses.ToListUserResponse(data)
 
 	ctx.JSON(http.StatusOK, resp)
+}
+func(handler UserHandler) FindUsersNearBy(ctx *gin.Context){
+
+	serviceId, _ := uuid.Parse(ctx.Param("serviceId")) 
+	lat, _ := strconv.ParseFloat(ctx.Param("latitude"), 64) 
+	long, _ := strconv.ParseFloat(ctx.Param("longitude"), 64) 
+	radiusKm, _ := strconv.ParseFloat(ctx.Query("radiusKm"), 64) 
+
+	data, findErr := handler.UseCase.FindUsersNearBy(serviceId, lat, long, radiusKm)
+
+	if findErr != nil {
+	   ctx.JSON(http.StatusBadRequest, findErr)
+	   return
+	}
+
+	ctx.JSON(http.StatusOK, data)
 }
 func(handler UserHandler) FindUserById(ctx *gin.Context){
 	 userId, paramErr := uuid.Parse(ctx.Param("userId")) 

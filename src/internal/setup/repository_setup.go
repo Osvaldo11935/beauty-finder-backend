@@ -6,6 +6,7 @@ import (
 )
 
 type RepositorySetup struct {
+	AddressRepository           interfaces_repositories.IAddressRepository
 	AppointmentRepository       interfaces_repositories.IAppointmentRepository
 	AppointmentStatusRepository interfaces_repositories.IAppointmentStatusRepository
 	AttachmentRepository        interfaces_repositories.IAttachmentRepository
@@ -21,6 +22,7 @@ type RepositorySetup struct {
 
 func NewRepositorySetup() *RepositorySetup {
 	return &RepositorySetup{
+		AddressRepository:           repositories.NewAddressRepository(),
 		AppointmentRepository:       repositories.NewAppointmentRepository(),
 		AppointmentStatusRepository: repositories.NewAppointmentStatusRepository(),
 		AttachmentRepository:        repositories.NewAttachmentRepository(),

@@ -17,7 +17,7 @@ func NewUserRouteGroup(route *gin.RouterGroup, handler setup.HandlerSetup) {
 	r.GET("", handler.UserHandler.FindAllUser)
 	r.GET(":useId", handler.UserHandler.FindUserById)
 	r.GET("service/:serviceId", handler.UserHandler.FindUserByServiceId)
-
+	r.GET("service/:serviceId/lat/:latitude/long/:longitude", handler.UserHandler.FindUsersNearBy)
 	r.PUT(":UserId", handler.UserHandler.Update)
 
 	r.DELETE(":UserId", handler.UserHandler.Remove)

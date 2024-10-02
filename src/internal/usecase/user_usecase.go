@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"log"
 	models_requests_posts "src/internal/delivery/http/models/requests/posts"
 	models_requests_puts "src/internal/delivery/http/models/requests/put"
 	"src/internal/domain/entities"
@@ -43,7 +44,7 @@ func (uc *UserUseCase) InsertServiceProvided(userId uuid.UUID, serviceIds []uuid
 	}
 
 	user.SetServicesProvided(serviceIds)
-	
+
 	uc.Repo.Remove(user.ServicesProvided)
 
 	// if removeErr != nil {
@@ -106,6 +107,57 @@ func (uc *UserUseCase) FindUserById(UserId uuid.UUID) (*entities.User, error) {
 	}
 
 	return &data, nil
+}
+func (uc *UserUseCase) FindUserByCredentials(email string, password string) (*entities.User, *[]string, error) {
+
+	var claims []string
+
+	var userData entities.User
+
+	findUserErr := uc.Repo.Query().
+		Preload("Role").
+		Where("Email", email).
+		Where("Password", password).First(&userData).Error
+
+	if findUserErr != nil {
+		log.Printf("Erro ao buscar dados do usuario: %v", findUserErr)
+		return nil, nil, errors.InvalidCredentialError()
+	}
+
+	roleData := userData.Role
+	claims = append(claims, roleData.Name)
+
+	return &userData, &claims, nil
+}
+func (uc *UserUseCase) FindUsersNearBy(serviceId uuid.UUID, latitude float64, longitude float64, radiusKm float64) ([]interface{}, error) {
+	
+	var users []entities.User
+
+	if err := uc.Repo.Query().
+		Preload("Address").
+		Preload("Role").
+		Preload("Person").
+		Find(&users).Error; err != nil {
+		return nil, err
+	}
+
+	var nearbyUsers []interface{}
+
+	for _, user := range users {
+		distance := Haversine(latitude, longitude, user.Address.Latitude, user.Address.Longitude)
+		if distance <= radiusKm {
+			nearbyUser := struct{
+				User entities.User
+				Distance float64
+			}{
+				User: user,
+				Distance: distance,
+			}
+			nearbyUsers = append(nearbyUsers, nearbyUser)
+		}
+	}
+
+	return nearbyUsers, nil
 }
 func (uc *UserUseCase) UpdateUser(UserId uuid.UUID, request models_requests_puts.UpdateUserRequest) error {
 

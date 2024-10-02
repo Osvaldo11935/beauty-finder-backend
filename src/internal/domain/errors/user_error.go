@@ -22,3 +22,7 @@ func ValidateCreateUserError(err []string) error {
 	return error_common.NewCustomError(error_common.ERR_VALIDATE,
 		"Ocorreu um erro ao registrar dados do usuario", "", err)
 }
+func InvalidCredentialError() error {
+	return error_common.NewCustomError(error_common.ERR_INVALID_CREDENCIAS,
+		"Falha ao buscar token de acesso", "Email ou senha estão incorretos.", nil)
+}

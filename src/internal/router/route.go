@@ -11,7 +11,7 @@ func NewRoute(setup *setup.HandlerSetup, pool *usecase.Pool) *gin.Engine {
 	router := gin.Default()
 
 	baseRoute := router.Group("/api")
-
+    route_group.NewAddressRouteGroup(baseRoute, *setup)
 	route_group.NewAppointmentRouteGroup(baseRoute, *setup)
 	route_group.NewAppointmentStatusRouteGroup(baseRoute, setup.AppointmentStatusHandler)
 	route_group.NewAttachmentRouteGroup(baseRoute, *setup)

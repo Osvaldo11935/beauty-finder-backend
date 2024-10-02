@@ -22,6 +22,7 @@ type User struct {
 	MessagesSender      []*Message         `gorm:"foreignKey:SenderId;references:ID"`
 	AppointmentProvider []*Appointment     `gorm:"foreignKey:ProviderId;references:ID"`
 	AppointmentClient   []*Appointment     `gorm:"foreignKey:ClientId;references:ID"`
+	Address             *Address           `gorm:"foreignKey:UserId;references:ID"`
 	Role                *Role
 }
 

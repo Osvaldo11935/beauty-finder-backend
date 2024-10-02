@@ -5,6 +5,7 @@ import (
 )
 
 type HandlerSetup struct {
+	AddressHandler handlers.AddressHandler
 	AppointmentHandler       handlers.AppointmentHandler
 	AppointmentStatusHandler handlers.AppointmentStatusHandler
 	AttachmentHandler        handlers.AttachmentHandler
@@ -20,6 +21,7 @@ type HandlerSetup struct {
 
 func NewHandlerSetup(setup *UseCaseSetup) *HandlerSetup{
 	 return &HandlerSetup{
+		AddressHandler: handlers.AddressHandler{UseCase: setup.UseCaseAddress},
 		AppointmentHandler: handlers.AppointmentHandler{UseCase: setup.UseCaseAppointment},
 		AppointmentStatusHandler: handlers.AppointmentStatusHandler{UseCase: setup.UseCaseAppointmentStatus},
 		AttachmentHandler:        handlers.AttachmentHandler{UseCase: setup.UseCaseAttachment},

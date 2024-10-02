@@ -3,6 +3,7 @@ package setup
 import "src/internal/usecase"
 
 type UseCaseSetup struct {
+	UseCaseAddress usecase.AddressUseCase
 	UseCaseAppointment usecase.AppointmentUseCase
 	UseCaseAppointmentStatus usecase.AppointmentStatusUseCase
 	UseCaseAttachment usecase.AttachmentUseCase
@@ -18,6 +19,7 @@ type UseCaseSetup struct {
 
 func NewUseCaseSetup(setup *RepositorySetup) *UseCaseSetup{
 	return &UseCaseSetup{
+		UseCaseAddress: usecase.AddressUseCase{Repo:  setup.AddressRepository},
 		UseCaseAppointment: usecase.AppointmentUseCase{Repo: setup.AppointmentRepository},
 		UseCaseAppointmentStatus: usecase.AppointmentStatusUseCase{Repo: setup.AppointmentStatusRepository},
 		UseCaseAttachment: usecase.AttachmentUseCase{Repo: setup.AttachmentRepository},
