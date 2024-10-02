@@ -131,26 +131,26 @@ func (uc *UserUseCase) FindUserByCredentials(email string, password string) (*en
 }
 func (uc *UserUseCase) FindUsersNearBy(serviceId uuid.UUID, latitude float64, longitude float64, radiusKm float64) ([]interface{}, error) {
 	
-	var users []entities.User
+	var serviceProviders []entities.ServiceProvider
 
 	if err := uc.Repo.Query().
-		Preload("Address").
-		Preload("Role").
-		Preload("Person").
-		Find(&users).Error; err != nil {
+		Preload("Provider.Address").
+		Preload("Provider.Role").
+		Preload("Provider.Person").
+		Find(&serviceProviders).Error; err != nil {
 		return nil, err
 	}
 
 	var nearbyUsers []interface{}
 
-	for _, user := range users {
-		distance := Haversine(latitude, longitude, user.Address.Latitude, user.Address.Longitude)
+	for _, serviceProvider := range serviceProviders {
+		distance := Haversine(latitude, longitude, serviceProvider.Provider.Address.Latitude, serviceProvider.Provider.Address.Longitude)
 		if distance <= radiusKm {
 			nearbyUser := struct{
 				User entities.User
 				Distance float64
 			}{
-				User: user,
+				User: *serviceProvider.Provider,
 				Distance: distance,
 			}
 			nearbyUsers = append(nearbyUsers, nearbyUser)
