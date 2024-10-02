@@ -1,6 +1,7 @@
 package route_group
 
 import (
+	"src/internal/delivery/http/middlewares"
 	"src/internal/setup"
 
 	"github.com/gin-gonic/gin"
@@ -9,13 +10,13 @@ import (
 func NewAppointmentRouteGroup(route *gin.RouterGroup, handler setup.HandlerSetup) {
      r := route.Group("/appointment")
 
-	 r.POST("", handler.AppointmentHandler.Create)
+	 r.POST("", middlewares.Auth(), handler.AppointmentHandler.Create)
 
-	 r.GET(":appointmentId", handler.AppointmentHandler.FindAppointmentById)
-	 r.GET("client/:clientId", handler.AppointmentHandler.FindAppointmentByClientId)
-	 r.GET("provider/:providerId", handler.AppointmentHandler.FindAppointmentByProviderId)
+	 r.GET(":appointmentId", middlewares.Auth(), handler.AppointmentHandler.FindAppointmentById)
+	 r.GET("client/:clientId", middlewares.Auth(), handler.AppointmentHandler.FindAppointmentByClientId)
+	 r.GET("provider/:providerId", middlewares.Auth(), handler.AppointmentHandler.FindAppointmentByProviderId)
 
-	 r.PUT(":appointmentId", handler.AppointmentHandler.Update)
+	 r.PUT(":appointmentId", middlewares.Auth(), handler.AppointmentHandler.Update)
 	 
-	 r.DELETE(":appointmentId", handler.AppointmentHandler.Remove)
+	 r.DELETE(":appointmentId", middlewares.Auth(), handler.AppointmentHandler.Remove)
 }

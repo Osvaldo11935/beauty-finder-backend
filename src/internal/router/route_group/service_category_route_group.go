@@ -1,6 +1,7 @@
 package route_group
 
 import (
+	"src/internal/delivery/http/middlewares"
 	"src/internal/setup"
 
 	"github.com/gin-gonic/gin"
@@ -9,12 +10,12 @@ import (
 func NewCategoryRouteGroup(route *gin.RouterGroup, handler setup.HandlerSetup) {
 	r := route.Group("/category")
 
-	r.POST("", handler.ServiceCategoryHandler.Create)
+	r.POST("", middlewares.Auth(), handler.ServiceCategoryHandler.Create)
 
-	r.GET("", handler.ServiceCategoryHandler.FindAllServiceCategory)
-	r.GET(":categoryId", handler.ServiceCategoryHandler.FindServiceCategoryById)
+	r.GET("", middlewares.Auth(), handler.ServiceCategoryHandler.FindAllServiceCategory)
+	r.GET(":categoryId", middlewares.Auth(), handler.ServiceCategoryHandler.FindServiceCategoryById)
 
-	r.PUT(":categoryId", handler.ServiceCategoryHandler.Update)
+	r.PUT(":categoryId", middlewares.Auth(), handler.ServiceCategoryHandler.Update)
 
-	r.DELETE(":categoryId", handler.ServiceCategoryHandler.Remove)
+	r.DELETE(":categoryId", middlewares.Auth(), handler.ServiceCategoryHandler.Remove)
 }

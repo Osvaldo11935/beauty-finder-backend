@@ -1,6 +1,7 @@
 package route_group
 
 import (
+	"src/internal/delivery/http/middlewares"
 	"src/internal/setup"
 
 	"github.com/gin-gonic/gin"
@@ -9,12 +10,12 @@ import (
 func NewAttachmentRouteGroup(route *gin.RouterGroup, handler setup.HandlerSetup) {
 	r := route.Group("/attachment")
 
-	r.POST("", handler.AttachmentHandler.Create)
+	r.POST("", middlewares.Auth(), handler.AttachmentHandler.Create)
 
-	r.GET(":attachmentId", handler.AttachmentHandler.FindAttachmentById)
-	r.GET("user/:userId", handler.AttachmentHandler.FindAttachmentByUserId)
+	r.GET(":attachmentId", middlewares.Auth(), handler.AttachmentHandler.FindAttachmentById)
+	r.GET("user/:userId", middlewares.Auth(), handler.AttachmentHandler.FindAttachmentByUserId)
 
-	r.PUT(":attachmentId", handler.AttachmentHandler.Update)
+	r.PUT(":attachmentId", middlewares.Auth(), handler.AttachmentHandler.Update)
 
-	r.DELETE(":attachmentId", handler.AttachmentHandler.Remove)
+	r.DELETE(":attachmentId", middlewares.Auth(), handler.AttachmentHandler.Remove)
 }

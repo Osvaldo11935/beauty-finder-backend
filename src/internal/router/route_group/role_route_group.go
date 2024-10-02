@@ -1,6 +1,7 @@
 package route_group
 
 import (
+	"src/internal/delivery/http/middlewares"
 	"src/internal/setup"
 
 	"github.com/gin-gonic/gin"
@@ -9,12 +10,12 @@ import (
 func NewRoleRouteGroup(route *gin.RouterGroup, handler setup.HandlerSetup) {
 	r := route.Group("/role")
 
-	r.POST("", handler.RoleHandler.Create)
+	r.POST("", middlewares.Auth(), handler.RoleHandler.Create)
 
-	r.GET("", handler.RoleHandler.FindAllRole)
-	r.GET(":roleId", handler.RoleHandler.FindRoleById)
+	r.GET("", middlewares.Auth(), handler.RoleHandler.FindAllRole)
+	r.GET(":roleId", middlewares.Auth(), handler.RoleHandler.FindRoleById)
 
-	r.PUT(":roleId", handler.RoleHandler.Update)
+	r.PUT(":roleId", middlewares.Auth(), handler.RoleHandler.Update)
 
-	r.DELETE(":roleId", handler.RoleHandler.Remove)
+	r.DELETE(":roleId", middlewares.Auth(), handler.RoleHandler.Remove)
 }
