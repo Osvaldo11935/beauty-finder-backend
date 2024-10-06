@@ -5,6 +5,7 @@ import (
 	models_requests_posts "src/internal/delivery/http/models/requests/posts"
 	models_requests_puts "src/internal/delivery/http/models/requests/put"
 	models_responses "src/internal/delivery/http/models/responses"
+	"src/internal/domain/entities"
 	"src/internal/domain/object_values"
 	"src/internal/security"
 	"src/internal/usecase"
@@ -165,6 +166,10 @@ func (handler UserHandler) FindUserById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 }
 func (handler UserHandler) FindToken(ctx *gin.Context) {
+	var findErr error
+	var claims *[]string
+	var user *entities.User
+
 	jwtSecurity := security.NewJwtTokenService()
 	var request models_requests_posts.GetTokenRequest
 
@@ -175,14 +180,18 @@ func (handler UserHandler) FindToken(ctx *gin.Context) {
 		return
 	}
 
-	user, claims, findErr := handler.UseCase.FindUserByCredentials(request.Email, request.Password)
+	if request.PhoneNumber != nil {
+		user, claims, findErr = handler.UseCase.FindUserByPhoneNumber(*request.PhoneNumber)
+	} else {
+		user, claims, findErr = handler.UseCase.FindUserByCredentials(*request.Email, *request.Password)
+	}
 
 	if findErr != nil {
 		ctx.JSON(http.StatusBadRequest, findErr)
 		return
 	}
 
-	token, generateTokenErr := jwtSecurity.GenerateToken(user.Email, user.ID.String(), *claims)
+	token, generateTokenErr := jwtSecurity.GenerateToken(*user.Email, user.ID.String(), *claims)
 
 	if generateTokenErr != nil {
 		ctx.JSON(http.StatusBadRequest, generateTokenErr)

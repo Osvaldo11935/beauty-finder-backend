@@ -8,7 +8,7 @@ import (
 func ValidateCreateUser(user *models_requests_posts.CreateUserRequest) error {
 	var validationErrors []string
 
-	validateEmailErr := errors.ValidateEmail(user.Email)
+	validateEmailErr := errors.ValidateEmail(*user.Email)
 	validatePhoneNumberErr := errors.ValidatePhone(user.PhoneNumber)
 
 	if validateEmailErr != nil {

@@ -19,7 +19,7 @@ type AttachmentTypeUseCase struct {
 func(uc *AttachmentTypeUseCase) InsertAttachmentType(request models_requests_posts.CreateAttachmentTypeRequest) (*uuid.UUID, error){
 	 req := entities.NewAttachmentType(request.Type, request.Description)
 
-	 createErr := uc.Repo.Insert(req)
+	 createErr := uc.Repo.Insert(&req)
 
 	 if createErr != nil {
 		return nil, errors.UnknownCreateAttachmentTypeError(createErr.Error())
@@ -63,7 +63,7 @@ func(uc *AttachmentTypeUseCase) UpdateAttachmentType(AttachmentTypeId uuid.UUID,
 
 	AttachmentType.Update(request.Type, request.Description)
 	
-	updateErr := uc.Repo.Update(AttachmentType)
+	updateErr := uc.Repo.Update(&AttachmentType)
 
 	if updateErr != nil {
 	   return errors.UnknownUpdateAttachmentTypeError(updateErr.Error())

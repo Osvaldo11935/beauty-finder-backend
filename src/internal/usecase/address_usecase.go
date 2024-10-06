@@ -18,7 +18,7 @@ type AddressUseCase struct {
 func(uc *AddressUseCase) InsertAddress(userId uuid.UUID, request models_requests_posts.CreateAddressRequest) (*uuid.UUID, error){
 	 req := entities.NewAddress(userId, request)
 
-	 createErr := uc.Repo.Insert(req)
+	 createErr := uc.Repo.Insert(&req)
 
 	 if createErr != nil {
 		return nil, errors.UnknownCreateAddressError(createErr.Error())

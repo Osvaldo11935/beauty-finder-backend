@@ -30,6 +30,7 @@ func NewAppointment(providerIdId uuid.UUID, clientId uuid.UUID, serviceId uuid.U
 	endDate extensios.CustomDate) Appointment{
 
 	return Appointment{
+		BaseAuditableEntity: *primitives.NewBaseAuditableEntity(),
 		ClientId: clientId,
 		ServiceId: serviceId,
         StatusId:  object_values.STATUS_PENDING_ID,

@@ -10,7 +10,9 @@ import (
 func NewAttachmentRouteGroup(route *gin.RouterGroup, handler setup.HandlerSetup) {
 	r := route.Group("/attachment")
 
-	r.POST("", middlewares.Auth(), handler.AttachmentHandler.Create)
+	r.POST("user/:userId/attachmentType/:attachmentTypeId", middlewares.Auth(), handler.AttachmentHandler.CreateAttachmentUser)
+	r.POST("service/:serviceId/attachmentType/:attachmentTypeId", middlewares.Auth(), handler.AttachmentHandler.CreateAttachmentService)
+	r.POST("category/:categoryId/attachmentType/:attachmentTypeId", middlewares.Auth(), handler.AttachmentHandler.CreateAttachmentCategory)
 
 	r.GET(":attachmentId", middlewares.Auth(), handler.AttachmentHandler.FindAttachmentById)
 	r.GET("user/:userId", middlewares.Auth(), handler.AttachmentHandler.FindAttachmentByUserId)

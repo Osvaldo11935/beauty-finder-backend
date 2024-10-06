@@ -12,8 +12,8 @@ func NewUserRouteGroup(route *gin.RouterGroup, handler setup.HandlerSetup) {
     
 	r.POST("token", handler.UserHandler.FindToken)
 	r.POST("admin", middlewares.Auth(), middlewares.ValidateUserMiddleware(), handler.UserHandler.CreateAdmin)
-	r.POST("client", middlewares.Auth(), middlewares.ValidateUserMiddleware(), handler.UserHandler.CreateClient)
-	r.POST("service-provider", middlewares.Auth(), middlewares.ValidateUserMiddleware(), handler.UserHandler.CreateServiceProvider)
+	r.POST("client", middlewares.ValidateUserMiddleware(), handler.UserHandler.CreateClient)
+	r.POST("service-provider", middlewares.ValidateUserMiddleware(), handler.UserHandler.CreateServiceProvider)
 	r.POST(":userId/service-provided", middlewares.Auth(), handler.UserHandler.CreateServiceProvided)
 
 	r.GET("", middlewares.Auth(), handler.UserHandler.FindAllUser)

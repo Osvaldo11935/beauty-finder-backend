@@ -18,7 +18,7 @@ type AppointmentStatusUseCase struct {
 func(uc *AppointmentStatusUseCase) InsertAppointmentStatus(request models_requests_posts.CreateAppointmentStatusRequest) (*uuid.UUID, error){
 	 req := entities.NewAppointmentStatus(request.Type, request.Description)
 
-	 createErr := uc.Repo.Insert(req)
+	 createErr := uc.Repo.Insert(&req)
 
 	 if createErr != nil {
 		return nil, errors.UnknownCreateStatusError(createErr.Error())

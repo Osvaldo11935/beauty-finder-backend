@@ -10,6 +10,10 @@ func UnknownFindUserError(description string) error {
 	return error_common.NewCustomError(error_common.ERR_UNKNOWN,
 		"Falha ao buscar dados do usuario", description, nil)
 }
+func NotFoundServiceProviderError() error {
+	return error_common.NewCustomError(error_common.ERR_UNKNOWN,
+		"Falha ao buscar dados do usuario",  "Provedor não encontrado.", nil)
+}
 func UnknownDeleteUserError(description string) error {
 	return error_common.NewCustomError(error_common.ERR_UNKNOWN,
 		"Falha ao deletar dados do usuario", description, nil)

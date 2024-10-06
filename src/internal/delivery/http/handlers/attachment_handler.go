@@ -14,14 +14,23 @@ type AttachmentHandler struct {
 	UseCase usecase.AttachmentUseCase
 }
 
-func(handler *AttachmentHandler) Create(ctx *gin.Context){
-	 var request models_requests_posts.CreateAttachmentRequest
+func(handler *AttachmentHandler) CreateAttachmentUser(ctx *gin.Context){
 
-	 deserializerErr := ctx.ShouldBindJSON(&request)
+	 userId := uuid.MustParse(ctx.Param("userId"))
 
-	 if deserializerErr != nil{
-        ctx.JSON(http.StatusBadRequest, deserializerErr)
+	 attachmentTypeId := uuid.MustParse(ctx.Param("attachmentTypeId"))
+
+	 url, uploadFileErr := usecase.Upload(ctx)
+
+	 if uploadFileErr != nil{
+        ctx.JSON(http.StatusBadRequest, uploadFileErr)
 		return
+	 }
+
+     request := models_requests_posts.CreateAttachmentRequest{
+		Url: *url,
+		UserId: &userId,
+		AttachmentTypeId: attachmentTypeId,
 	 }
 
 	 id, createErr := handler.UseCase.InsertAttachment(request)
@@ -33,7 +42,62 @@ func(handler *AttachmentHandler) Create(ctx *gin.Context){
 
 	 ctx.JSON(http.StatusOK, models_responses.NewCreateResponse(*id))
 }
+func(handler *AttachmentHandler) CreateAttachmentService(ctx *gin.Context){
 
+	serviceId := uuid.MustParse(ctx.Param("serviceId"))
+
+	attachmentTypeId := uuid.MustParse(ctx.Param("attachmentTypeId"))
+
+	url, uploadFileErr := usecase.Upload(ctx)
+
+	if uploadFileErr != nil{
+	   ctx.JSON(http.StatusBadRequest, uploadFileErr)
+	   return
+	}
+
+	request := models_requests_posts.CreateAttachmentRequest{
+	   Url: *url,
+	   ServiceId: &serviceId,
+	   AttachmentTypeId: attachmentTypeId,
+	}
+
+	id, createErr := handler.UseCase.InsertAttachment(request)
+
+	if createErr != nil {
+	   ctx.JSON(http.StatusBadRequest, createErr)
+	   return 
+	}
+
+	ctx.JSON(http.StatusOK, models_responses.NewCreateResponse(*id))
+}
+func(handler *AttachmentHandler) CreateAttachmentCategory(ctx *gin.Context){
+
+	categoryId := uuid.MustParse(ctx.Param("categoryId"))
+
+	attachmentTypeId := uuid.MustParse(ctx.Param("attachmentTypeId"))
+
+	url, uploadFileErr := usecase.Upload(ctx)
+
+	if uploadFileErr != nil{
+	   ctx.JSON(http.StatusBadRequest, uploadFileErr)
+	   return
+	}
+
+	request := models_requests_posts.CreateAttachmentRequest{
+	   Url: *url,
+	   CategoryId: &categoryId,
+	   AttachmentTypeId: attachmentTypeId,
+	}
+
+	id, createErr := handler.UseCase.InsertAttachment(request)
+
+	if createErr != nil {
+	   ctx.JSON(http.StatusBadRequest, createErr)
+	   return 
+	}
+
+	ctx.JSON(http.StatusOK, models_responses.NewCreateResponse(*id))
+}
 func (handler *AttachmentHandler) FindAttachmentByUserId(ctx *gin.Context){
       
 	userId := uuid.MustParse(ctx.Param("userId"))

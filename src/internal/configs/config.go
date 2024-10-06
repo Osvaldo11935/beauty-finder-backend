@@ -1,6 +1,6 @@
 package configs
 
-type Config struct{
+type Config struct {
 	DBHost               string
 	DBPort               int
 	DBUser               string
@@ -12,6 +12,7 @@ type Config struct{
 	FileKeys             string
 	Bucket               string
 	BaseUrlGoogleStorage string
+	QueryingPersonData   string
 }
 
 func LoadConfig() (*Config, error) {
@@ -43,16 +44,16 @@ func LoadConfig() (*Config, error) {
 	config := &Config{
 		DBHost:               "localhost", //os.Getenv("DB_HOST"),
 		DBPort:               5432,
-		DBUser:               "root", //os.Getenv("DB_USER"),
-		DBPassword:           "123", //os.Getenv("DB_PASSWORD"),
-		DBName:               "beautyfinder", //os.Getenv("DB_NAME"),
-		ServerPort:           "5000", //os.Getenv("PORT"),
-		JwtSecretKey:         "230E7C21-DE21-4506-BFBD-18F7319B3FC4", //os.Getenv("JWT_SECRET_KEY"),
-		PgConnectionString:   "postgresql://root:123@localhost:5432/beautyfinder?sslmode=disable",   //os.Getenv("POSTGRES_CONNECTION_STRING"),
-		FileKeys:             "land-8c098-d87756162e9f.json",//os.Getenv("FILE_CONFIG_GOOGLE_STORAGE"),
-		Bucket:               "document-land", //os.Getenv("BUCKET_NAME"),
-		BaseUrlGoogleStorage: "https://storage.googleapis.com", //os.Getenv("BASE_URL_GOOGLE_STORAGE"),
+		DBUser:               "root",                                                              //os.Getenv("DB_USER"),
+		DBPassword:           "123",                                                               //os.Getenv("DB_PASSWORD"),
+		DBName:               "beautyfinder",                                                      //os.Getenv("DB_NAME"),
+		ServerPort:           "5000",                                                              //os.Getenv("PORT"),
+		JwtSecretKey:         "230E7C21-DE21-4506-BFBD-18F7319B3FC4",                              //os.Getenv("JWT_SECRET_KEY"),
+		PgConnectionString:   "postgresql://root:123@localhost:5432/beautyfinder?sslmode=disable", //os.Getenv("POSTGRES_CONNECTION_STRING"),
+		FileKeys:             "../land-8c098-d87756162e9f.json",                                   //os.Getenv("FILE_CONFIG_GOOGLE_STORAGE"),
+		Bucket:               "document-land",                                                     //os.Getenv("BUCKET_NAME"),
+		BaseUrlGoogleStorage: "https://storage.googleapis.com",                                    //os.Getenv("BASE_URL_GOOGLE_STORAGE"),
+		QueryingPersonData:   "https://www.sepe.gov.ao/ao/actions/bi.ajcall.php?bi",
 	}
 	return config, nil
 }
-

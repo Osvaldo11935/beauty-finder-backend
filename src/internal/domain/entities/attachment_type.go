@@ -19,6 +19,7 @@ func(s *AttachmentType) TableName() string{
 func NewAttachmentType(_type string, description string) AttachmentType{
 
 	return AttachmentType{
+		   BaseAuditableEntity: *primitives.NewBaseAuditableEntity(),
            Type: _type,
 		   Description: description,
 	}

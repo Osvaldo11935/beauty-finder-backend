@@ -34,6 +34,8 @@ func(uc *ServiceUseCase) FindAllService() ([]entities.Service, error){
 
 	findErr := uc.Repo.Query().
 	 		Preload("Category").
+			Preload("Price").
+			Preload("Attachment").
 			Find(&data).Error
 
 	if findErr != nil {
@@ -50,6 +52,8 @@ func(uc *ServiceUseCase) FindServiceByProviderId(providerId uuid.UUID) ([]entiti
 
 	findErr := uc.Repo.Query().
 	 		Preload("Service.Category").
+			Preload("Service.Attachment").
+			Preload("Service.Price").
 			Find(&data, "ProviderId", providerId).Error
 
 	if findErr != nil {
@@ -68,6 +72,8 @@ func(uc *ServiceUseCase) FindServiceByCategoryId(categoryId uuid.UUID) ([]entiti
 
 	findErr := uc.Repo.Query().
 	 		Preload("Category").
+			Preload("Price").
+			Preload("Attachment").
 			Find(&data, "CategoryId", categoryId).Error
 
 	if findErr != nil {
@@ -82,6 +88,8 @@ func(uc *ServiceUseCase) FindServiceById(ServiceId uuid.UUID) (*entities.Service
 
 	findErr := uc.Repo.Query().
 	        Preload("Category").
+			Preload("Price").
+			Preload("Attachment").
 			First(&data, "Id", ServiceId).Error
 
 	if findErr != nil {

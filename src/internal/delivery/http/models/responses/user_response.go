@@ -8,14 +8,13 @@ import (
 )
 
 type UserResponse struct {
-	Id               uuid.UUID          `json:"id"`
-	Email            string             `json:"Email"`
-	UserName         string             `json:"UserName"`
-	Password         string             `json:"Password"`
-	PhoneNumber      string             `json:"PhoneNumber"`
-	Person           *PersonResponse    `json:"person"`
-	Conn             *websocket.Conn    `json:"conn"`
-	Role             *RoleResponse `json:"role"`
+	Id          uuid.UUID       `json:"id"`
+	Email       *string         `json:"Email"`
+	UserName    *string         `json:"UserName"`
+	PhoneNumber string          `json:"PhoneNumber"`
+	Person      *PersonResponse `json:"person"`
+	Conn        *websocket.Conn `json:"conn"`
+	Role        *RoleResponse   `json:"role"`
 }
 
 func ToUserResponse(data *entities.User) *UserResponse {

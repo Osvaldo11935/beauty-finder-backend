@@ -25,7 +25,7 @@ func(uc *AppointmentUseCase) InsertAppointment(request models_requests_posts.Cre
 		request.StartDate, 
 		request.EndDate)
 
-	 createErr := uc.Repo.Insert(req)
+	 createErr := uc.Repo.Insert(&req)
 
 	 if createErr != nil {
 		return nil, errors.UnknownCreateAppointmentError(createErr.Error())
@@ -94,7 +94,7 @@ func(uc *AppointmentUseCase) UpdateAppointment(Id uuid.UUID, request models_requ
 
 	appointment.Update(request.ServiceId)
 	
-	updateErr := uc.Repo.Update(appointment)
+	updateErr := uc.Repo.Update(&appointment)
 
 	if updateErr != nil {
 	   return errors.UnknownUpdateAppointmentError(updateErr.Error())

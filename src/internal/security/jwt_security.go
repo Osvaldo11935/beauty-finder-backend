@@ -5,7 +5,9 @@ import (
 	"log"
 	"src/internal/configs"
 	models_responses "src/internal/delivery/http/models/responses"
+	"strings"
 	"time"
+
 	"github.com/dgrijalva/jwt-go"
 )
 
@@ -61,8 +63,8 @@ func (s *JwtTokenService) GenerateToken(email string, userId string, claim []str
 
 func (s *JwtTokenService) ValidateToken(tokenString string) (*ClaimJwt, error) {
 	claims := ClaimJwt{}
-
-	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+    tokenString = strings.TrimSpace(tokenString)
+	token, err := jwt.ParseWithClaims(tokenString, &claims, func(token *jwt.Token) (interface{}, error) {
 		return s.JwtKey, nil
 	})
 

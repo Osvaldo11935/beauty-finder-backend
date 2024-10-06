@@ -21,6 +21,27 @@ type PersonResponse struct {
 	DateIssueDocument     extensios.CustomDate `json:"dateIssueDocument"`
 }
 
+
+func PersonDataFromGovernmentResponseToPersonResponse(data *PersonDataFromGovernmentResponse) *PersonResponse {
+    
+	if data == nil {
+		return nil
+	 }
+	return &PersonResponse{
+		Id: data.Id,               
+		FullName: data.FullName, 
+		BirthDate: data.BirthDate,            
+		Gender: data.Gender,               
+		Naturalness: data.Naturalness,         
+		MaritalStatus: data.MaritalStatus,        
+		FatherName: data.FatherName,           
+		MotherName: data.MotherName,           
+		NationalRegistry: data.NationalRegistry,     
+		PlaceIssuanceDocument: data.PlaceIssuanceDocument,
+		DateIssueDocument: data.DateIssueDocument,    
+	}
+}
+
 func ToPersonResponse(data *entities.Person) *PersonResponse {
     
 	if data == nil {

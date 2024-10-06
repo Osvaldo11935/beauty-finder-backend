@@ -57,6 +57,20 @@ func(handler PersonHandler) FindPersonByUserId(ctx *gin.Context){
 	 ctx.JSON(http.StatusOK, resp)
 }
 
+func(handler PersonHandler) FindPersonByNationalRegistry(ctx *gin.Context){
+	nationalRegistry := ctx.Param("nationalRegistry")
+
+	data, findErr := handler.UseCase.FindPersonDataFromGovernmentApi(ctx, nationalRegistry)
+
+	if findErr != nil {
+	   ctx.JSON(http.StatusBadRequest, findErr)
+	   return
+	}
+    result := models_responses.PersonDataFromGovernmentResponseToPersonResponse(&data.Data)
+
+	ctx.JSON(http.StatusOK, result)
+}
+
 func(handler *PersonHandler) Update(ctx *gin.Context){
 
 	var request models_requests_puts.UpdatePersonRequest

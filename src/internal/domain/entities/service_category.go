@@ -7,6 +7,7 @@ type ServiceCategory struct {
 	Name        string `gorm:"column:Name;"`
 	Description string `gorm:"column:Description;"`
 	Services []*Service `gorm:"foreignKey:CategoryId;references:ID"`
+	Attachment *Attachment `gorm:"foreignKey:CategoryId;references:ID"`
 }
 
 func(s *ServiceCategory) TableName() string{

@@ -9,9 +9,9 @@ import (
 
 type User struct {
 	primitives.BaseAuditableEntity
-	Email               string             `gorm:"column:Email"`
-	UserName            string             `gorm:"column:UserName"`
-	Password            string             `gorm:"column:Password"`
+	Email               *string             `gorm:"column:Email"`
+	UserName            *string             `gorm:"column:UserName"`
+	Password            *string             `gorm:"column:Password"`
 	PhoneNumber         string             `gorm:"column:PhoneNumber"`
 	RoleId              uuid.UUID          `gorm:"column:RoleId"`
 	Person              *Person            `gorm:"foreignKey:UserId;references:ID"`
@@ -30,7 +30,7 @@ func (s *User) TableName() string {
 	return "User"
 }
 
-func NewUser(email string, userName string, password string, phoneNumber string, roleId uuid.UUID) User {
+func NewUser(email *string, userName *string, password *string, phoneNumber string, roleId uuid.UUID) User {
 	body := User{
 		BaseAuditableEntity: *primitives.NewBaseAuditableEntity(),
 		Email:               email,
@@ -45,13 +45,13 @@ func NewUser(email string, userName string, password string, phoneNumber string,
 
 func (s *User) Update(email *string, userName *string, password *string, phoneNumber *string, roleId *uuid.UUID) {
 	if email != nil {
-		s.Email = *email
+		s.Email = email
 	}
 	if userName != nil {
-		s.UserName = *userName
+		s.UserName = userName
 	}
 	if password != nil {
-		s.Password = *password
+		s.Password = password
 	}
 	if phoneNumber != nil {
 		s.PhoneNumber = *phoneNumber
