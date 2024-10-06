@@ -10,7 +10,7 @@ import (
 func NewAddressRouteGroup(route *gin.RouterGroup, handler setup.HandlerSetup) {
 	r := route.Group("/address")
 
-	r.POST("/user/:userId", middlewares.Auth(), handler.AddressHandler.Create)
+	r.POST("/user/:userId", handler.AddressHandler.Create)
 
 	r.GET("/user/:userId", middlewares.Auth(), handler.AddressHandler.FindAddressByUserId)
 

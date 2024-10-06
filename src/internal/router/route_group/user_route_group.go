@@ -9,7 +9,7 @@ import (
 
 func NewUserRouteGroup(route *gin.RouterGroup, handler setup.HandlerSetup) {
 	r := route.Group("/user")
-    
+
 	r.POST("token", handler.UserHandler.FindToken)
 	r.POST("admin", middlewares.Auth(), middlewares.ValidateUserMiddleware(), handler.UserHandler.CreateAdmin)
 	r.POST("client", middlewares.ValidateUserMiddleware(), handler.UserHandler.CreateClient)
@@ -17,7 +17,7 @@ func NewUserRouteGroup(route *gin.RouterGroup, handler setup.HandlerSetup) {
 	r.POST(":userId/service-provided", middlewares.Auth(), handler.UserHandler.CreateServiceProvided)
 
 	r.GET("", middlewares.Auth(), handler.UserHandler.FindAllUser)
-	r.GET(":useId", middlewares.Auth(), handler.UserHandler.FindUserById)
+	r.GET("user-info", middlewares.Auth(), handler.UserHandler.FindUserById)
 	r.GET("service/:serviceId", middlewares.Auth(), handler.UserHandler.FindUserByServiceId)
 	r.GET("service/:serviceId/lat/:latitude/long/:longitude", middlewares.Auth(), handler.UserHandler.FindUsersNearBy)
 	r.PUT(":UserId", middlewares.Auth(), handler.UserHandler.Update)

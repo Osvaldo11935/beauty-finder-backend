@@ -58,12 +58,18 @@ func (handler *UserHandler) CreateClient(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, models_responses.NewCreateResponse(*id))
 }
 func (handler *UserHandler) CreateServiceProvider(ctx *gin.Context) {
-	var request models_requests_posts.CreateUserRequest
 
-	deserializerErr := ctx.ShouldBindJSON(&request)
+	body, paramExists := ctx.Get("request")
 
-	if deserializerErr != nil {
-		ctx.JSON(http.StatusBadRequest, deserializerErr)
+	if !paramExists {
+		ctx.JSON(http.StatusBadRequest, "Request data not found")
+		return
+	}
+
+	request, serializerErr := body.(models_requests_posts.CreateUserRequest)
+
+	if !serializerErr {
+		ctx.JSON(http.StatusBadRequest, "Failed to parse request")
 		return
 	}
 
@@ -147,14 +153,9 @@ func (handler UserHandler) FindUsersNearBy(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, data)
 }
 func (handler UserHandler) FindUserById(ctx *gin.Context) {
-	userId, paramErr := uuid.Parse(ctx.Param("userId"))
+	userId, _ := ctx.Get("userId")
 
-	if paramErr != nil {
-		ctx.JSON(http.StatusBadRequest, paramErr)
-		return
-	}
-
-	data, findErr := handler.UseCase.FindUserById(userId)
+	data, findErr := handler.UseCase.FindUserById(uuid.MustParse(userId.(string)))
 
 	if findErr != nil {
 		ctx.JSON(http.StatusBadRequest, findErr)

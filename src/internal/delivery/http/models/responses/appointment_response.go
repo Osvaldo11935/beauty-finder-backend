@@ -12,6 +12,7 @@ type AppointmentResponse struct {
 	StartDate extensios.CustomDate       `json:"startDate"`
 	EndDate   extensios.CustomDate       `json:"endDate"`
 	Client    *UserResponse              `json:"client"`
+	Provider  *UserResponse              `json:"provider"`
 	Status    *AppointmentStatusResponse `json:"status"`
 	Service   *ServiceResponse           `json:"service"`
 }
@@ -25,6 +26,7 @@ func ToAppointmentResponse(data *entities.Appointment) *AppointmentResponse {
 		StartDate: data.StartDate,
 		EndDate:   data.EndDate,
 		Client:    ToUserResponse(data.Client),
+		Provider:  ToUserResponse(data.Provider),
 		Status:    ToAppointmentStatusResponse(data.Status),
 		Service:   ToServiceResponse(data.Service),
 	}

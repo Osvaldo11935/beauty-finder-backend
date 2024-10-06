@@ -9,7 +9,7 @@ import (
 func NewPersonRouteGroup(route *gin.RouterGroup, handler setup.HandlerSetup) {
 	r := route.Group("/person")
 
-	r.POST("/user/:userId", middlewares.Auth(), handler.PersonHandler.Create)
+	r.POST("/user/:userId", handler.PersonHandler.Create)
 
 	r.GET("/user/:userId", middlewares.Auth(), handler.PersonHandler.FindPersonByUserId)
 	r.GET("national-registry/:nationalRegistry", handler.PersonHandler.FindPersonByNationalRegistry)

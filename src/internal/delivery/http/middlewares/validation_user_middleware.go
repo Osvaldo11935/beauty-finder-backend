@@ -19,7 +19,7 @@ func ValidateUserMiddleware() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-
+        
 		validationErrors := validators.ValidateCreateUser(&request)
 		if validationErrors != nil {
 			c.JSON(http.StatusBadRequest, validationErrors)
