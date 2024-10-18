@@ -50,7 +50,7 @@ func (pool *Pool) Start() {
 					if client.ID != message.Sender.ID {
 						err := client.SendMessage(&message)
 						if err != nil {
-							fmt.Printf("Erro ao enviar mensagem para %s: %v\n", client.UserName, err)
+							fmt.Printf("rro ao enviar mensagem para %s: %v\n", client.UserName, err)
 							client.CloseConnection()
 							delete(pool.Clients, client)
 						}

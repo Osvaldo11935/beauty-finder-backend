@@ -61,6 +61,36 @@ func (uc *UserUseCase) InsertServiceProvided(userId uuid.UUID, serviceIds []uuid
 	}
 	return nil
 }
+func (uc *UserUseCase) InsertFcmToken(userId uuid.UUID, fcmToken models_requests_posts.CreateFcmTokenRequest) error {
+
+	var user entities.User
+
+	findErr := uc.Repo.Query().
+		Preload("FcmToken").
+		Where("Id", userId).
+		First(&user).Error
+
+	if findErr != nil {
+		if err.Is(findErr, gorm.ErrRecordNotFound){
+			return errors.NotFoundUserError()
+		}
+		return errors.UnknownCreateUserError(findErr.Error())
+	}
+
+	user.SetFcmToken(
+		fcmToken.FcmToken, 
+		fcmToken.DeviceName,
+		fcmToken.DeviceId,
+	)
+
+	uc.Repo.Remove(user.FcmToken)
+	
+	createErr := uc.Repo.Insert(user.FcmToken)
+	if createErr != nil {
+		return errors.UnknownDeleteUserError(createErr.Error())
+	}
+	return nil
+}
 func (uc *UserUseCase) FindAllUser() ([]entities.User, error) {
 
 	var data []entities.User
@@ -86,6 +116,7 @@ func (uc *UserUseCase) FindUserByServiceId(serviceId uuid.UUID) ([]entities.User
 		Preload("Service").
 		Preload("Provider.Person").
 		Preload("Provider.Role").
+		Preload("Provider.FcmToken").
 		Find(&data, "ServiceId", serviceId).Error
 
 	if findErr != nil {

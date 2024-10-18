@@ -5,13 +5,12 @@ import (
 )
 
 type ServiceProvider struct {
-	 ServiceId uuid.UUID `gorm:"column:ServiceId"`
-	 ProviderId uuid.UUID `gorm:"column:ProviderId"`
-	 Service *Service
-	 Provider *User
-
+	ServiceId  uuid.UUID `gorm:"column:ServiceId" json:"serviceId"`
+	ProviderId uuid.UUID `gorm:"column:ProviderId" json:"providerId"`
+	Service    *Service  `json:"service"`
+	Provider   *User     `json:"provider"`
 }
 
-func(s *ServiceProvider) TableName() string{
+func (s *ServiceProvider) TableName() string {
 	return "ServiceProvider"
 }

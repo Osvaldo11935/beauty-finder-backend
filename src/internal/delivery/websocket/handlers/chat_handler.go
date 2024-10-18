@@ -17,7 +17,6 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-
 func WebSocketHandler(pool *usecase.Pool, userUseCase *usecase.UserUseCase, w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -25,9 +24,9 @@ func WebSocketHandler(pool *usecase.Pool, userUseCase *usecase.UserUseCase, w ht
 		return
 	}
 
-    userId := uuid.MustParse(r.URL.Query().Get("userId"))
+	userId := uuid.MustParse(r.URL.Query().Get("userId"))
 
-    user, _ := userUseCase.FindUserById(userId)
+	user, _ := userUseCase.FindUserById(userId)
 
 	user.Conn = conn
 
@@ -57,32 +56,31 @@ func read(user *entities.User, userUseCase *usecase.UserUseCase, pool *usecase.P
 		fmt.Printf("Mensagem recebida: %s\n", msg)
 
 		var tempMessage struct {
-			Type int    `json:"type"`
-			Body string `json:"body"`
+			Type       int       `json:"type"`
+			Body       string    `json:"body"`
 			ReceiverId uuid.UUID `json:"receiverId"`
 		}
 		err = json.Unmarshal(msg, &tempMessage)
-		
+
 		if err != nil {
 			fmt.Println("Erro ao decodificar mensagem JSON:", err)
 			return
 		}
-        
+
 		userReceiver, _ := userUseCase.FindUserById(tempMessage.ReceiverId)
 
 		message := entities.Message{
-			Type:   tempMessage.Type,
-			Body:   tempMessage.Body,
+			Type:     tempMessage.Type,
+			Body:     tempMessage.Body,
 			Receiver: userReceiver,
-			Sender: user,        
+			Sender:   user,
 			SenderId: user.ID,
 		}
 
-		if  userReceiver != nil {
+		if userReceiver != nil {
 			message.ReceiverId = userReceiver.ID
 		}
 
 		pool.Broadcast <- message
 	}
 }
-

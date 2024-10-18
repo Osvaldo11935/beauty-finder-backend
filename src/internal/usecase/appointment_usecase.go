@@ -1,6 +1,5 @@
 package usecase
 
-
 import (
 	models_requests_posts "src/internal/delivery/http/models/requests/posts"
 	models_requests_puts "src/internal/delivery/http/models/requests/put"
@@ -15,105 +14,144 @@ type AppointmentUseCase struct {
 	Repo interfaces_repositories.IAppointmentRepository
 }
 
+func (uc *AppointmentUseCase) InsertAppointment(request models_requests_posts.CreateAppointmentRequest) (*uuid.UUID, error) {
 
-func(uc *AppointmentUseCase) InsertAppointment(request models_requests_posts.CreateAppointmentRequest) (*uuid.UUID, error){
-	 
 	req := entities.NewAppointment(
-		request.ProviderId, 
-		request.ClientId, 
-		request.ServiceId, 
-		request.StartDate, 
+		request.ProviderId,
+		request.ClientId,
+		request.ServiceId,
+		request.StartDate,
 		request.EndDate)
 
-	 createErr := uc.Repo.Insert(&req)
+	createErr := uc.Repo.Insert(&req)
 
-	 if createErr != nil {
+	if createErr != nil {
 		return nil, errors.UnknownCreateAppointmentError(createErr.Error())
-	 }
+	}
 
-	 return &req.ID, nil
+	return &req.ID, nil
 }
 
-func(uc *AppointmentUseCase) FindAppointmentByProviderId(providerId uuid.UUID) ([]entities.Appointment, error){
-	
+func (uc *AppointmentUseCase) FindAppointmentByProviderId(providerId uuid.UUID) ([]entities.Appointment, error) {
+
 	var data []entities.Appointment
 
 	findErr := uc.Repo.Query().
-	        Preload("Service").
-			Preload("Status").
-			Preload("Client").
-	        Find(&data, "ProviderId", providerId).Error
+		Preload("Service").
+		Preload("Status").
+		Preload("Client").
+		Find(&data, "ProviderId", providerId).Error
 
 	if findErr != nil {
-	   return nil, errors.UnknownFindAppointmentError(findErr.Error())
+		return nil, errors.UnknownFindAppointmentError(findErr.Error())
 	}
 
 	return data, nil
 }
-func(uc *AppointmentUseCase) FindAppointmentByClientId(clientId uuid.UUID) ([]entities.Appointment, error){
-	
+func (uc *AppointmentUseCase) FindAppointmentByClientId(clientId uuid.UUID) ([]entities.Appointment, error) {
+
 	var data []entities.Appointment
 
 	findErr := uc.Repo.Query().
-	        Preload("Service").
-			Preload("Status").
-			Preload("Provider").
-	        Find(&data, "ClientId", clientId).Error
+		Preload("Service").
+		Preload("Status").
+		Preload("Provider").
+		Find(&data, "ClientId", clientId).Error
 
 	if findErr != nil {
-	   return nil, errors.UnknownFindAppointmentError(findErr.Error())
+		return nil, errors.UnknownFindAppointmentError(findErr.Error())
 	}
 
 	return data, nil
 }
 
-func(uc *AppointmentUseCase) FindAppointmentById(Id uuid.UUID) (*entities.Appointment, error){
+func (uc *AppointmentUseCase) FindAppointmentById(Id uuid.UUID) (*entities.Appointment, error) {
 	var data entities.Appointment
 
 	findErr := uc.Repo.Query().
-			   Preload("Service").
-			   Preload("Status").
-			   Preload("Provider").
-			   Preload("ClientId").
-			   First(&data, "ID", Id).Error
+		Preload("Service.Price").
+		Preload("Service.Category").
+		Preload("Status").
+		Preload("Provider.Person").
+		Preload("Provider.Address").
+		Preload("Client.Person").
+		Preload("Client.Address").
+		Preload("Address").
+		First(&data, "Id", Id).Error
 
 	if findErr != nil {
-	   return nil, errors.UnknownFindAppointmentError(findErr.Error())
+		return nil, errors.UnknownFindAppointmentError(findErr.Error())
 	}
 
 	return &data, nil
 }
 
-func(uc *AppointmentUseCase) UpdateAppointment(Id uuid.UUID, request models_requests_puts.UpdateAppointmentRequest) (error){
-	
+func (uc *AppointmentUseCase) UpdateAppointment(Id uuid.UUID, request models_requests_puts.UpdateAppointmentRequest) error {
+
 	appointment, findErr := uc.FindAppointmentById(Id)
 
-	if findErr !=nil {
+	if findErr != nil {
 		return findErr
 	}
 
-	appointment.Update(request.ServiceId)
-	
+	appointment.Update(*request.ServiceId)
+
 	updateErr := uc.Repo.Update(&appointment)
 
 	if updateErr != nil {
-	   return errors.UnknownUpdateAppointmentError(updateErr.Error())
+		return errors.UnknownUpdateAppointmentError(updateErr.Error())
+	}
+
+	return nil
+}
+func (uc *AppointmentUseCase) UpdateStatusTypeAppointment(Id uuid.UUID, request models_requests_puts.UpdateAppointmentRequest) error {
+
+	appointment, findErr := uc.FindAppointmentById(Id)
+
+	if findErr != nil {
+		return findErr
+	}
+
+	appointment.Update(*request.ServiceId)
+
+	updateErr := uc.Repo.Update(&appointment)
+
+	if updateErr != nil {
+		return errors.UnknownUpdateAppointmentError(updateErr.Error())
+	}
+
+	return nil
+}
+func (uc *AppointmentUseCase) SetProviderAppointment(Id uuid.UUID, request models_requests_puts.UpdateAppointmentRequest) error {
+
+	appointment, findErr := uc.FindAppointmentById(Id)
+
+	if findErr != nil {
+		return findErr
+	}
+
+	appointment.SetProvider(*request.ProviderId)
+
+	updateErr := uc.Repo.Update(&appointment)
+
+	if updateErr != nil {
+		return errors.UnknownUpdateAppointmentError(updateErr.Error())
 	}
 
 	return nil
 }
 
-func(uc *AppointmentUseCase) DeleteAppointment(Id uuid.UUID) error{
-	
+func (uc *AppointmentUseCase) DeleteAppointment(Id uuid.UUID) error {
+
 	appointment, findErr := uc.FindAppointmentById(Id)
 
-	if findErr !=nil {
+	if findErr != nil {
 		return findErr
 	}
 
-    removeErr := uc.Repo.Remove(appointment)
+	removeErr := uc.Repo.Remove(appointment)
 
-	if removeErr !=nil {
+	if removeErr != nil {
 		return errors.UnknownDeleteAppointmentError(removeErr.Error())
 	}
 

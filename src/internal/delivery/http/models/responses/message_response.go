@@ -7,22 +7,33 @@ import (
 )
 
 type MessageResponse struct {
-	Id       uuid.UUID     `json:"id"`
-	Type     int           `json:"type"`
-	Body     string        `json:"body"`
-	Receiver *UserResponse `json:"receiver"`
+	Id         uuid.UUID     `json:"id"`
+	Type       int           `json:"type"`
+	Body       string        `json:"body"`
+	Sender     *UserResponse `json:"sender"`
+	Receiver   *UserResponse `json:"receiver"`
+	SenderId   uuid.UUID     `json:"senderId"`
+	ReceiverId uuid.UUID     `json:"receiverId"`
 }
 
 func ToMessageResponse(data *entities.Message) *MessageResponse {
 	if data == nil {
 		return nil
 	}
-	return &MessageResponse{
+	d := &MessageResponse{
 		Id:       data.ID,
 		Type:     data.Type,
 		Body:     data.Body,
+		Sender:   ToUserResponse(data.Sender),
 		Receiver: ToUserResponse(data.Receiver),
 	}
+	if data.Sender != nil {
+		d.SenderId = data.SenderId
+	}
+	if data.Receiver != nil {
+		d.ReceiverId = data.ReceiverId
+	}
+	return d
 }
 
 func ToListMessageResponse(data []entities.Message) []MessageResponse {

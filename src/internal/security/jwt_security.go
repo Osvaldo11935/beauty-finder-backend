@@ -35,17 +35,18 @@ func NewJwtTokenService() *JwtTokenService {
 	}
 }
 
-
-func (s *JwtTokenService) GenerateToken(email string, userId string, claim []string) (*models_responses.TokenResponse, error) {
+func (s *JwtTokenService) GenerateToken(email *string, userId string, claim []string) (*models_responses.TokenResponse, error) {
 	expirationTime := time.Now().Add(5 * time.Minute)
 
 	claims := &ClaimJwt{
-		Email:  email,
 		UserID: userId,
 		Claims: claim,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},
+	}
+	if email != nil {
+		claims.Email = *email
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -56,14 +57,14 @@ func (s *JwtTokenService) GenerateToken(email string, userId string, claim []str
 	}
 
 	return &models_responses.TokenResponse{
-		AccessToken:  tokenString,
+		AccessToken:    tokenString,
 		ExpirationTime: expirationTime.Unix(),
 	}, nil
 }
 
 func (s *JwtTokenService) ValidateToken(tokenString string) (*ClaimJwt, error) {
 	claims := ClaimJwt{}
-    tokenString = strings.TrimSpace(tokenString)
+	tokenString = strings.TrimSpace(tokenString)
 	token, err := jwt.ParseWithClaims(tokenString, &claims, func(token *jwt.Token) (interface{}, error) {
 		return s.JwtKey, nil
 	})

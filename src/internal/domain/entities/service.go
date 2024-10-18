@@ -8,13 +8,13 @@ import (
 
 type Service struct {
 	primitives.BaseAuditableEntity
-	Name            string             `gorm:"column:Name"`
-	Description     string             `gorm:"column:Description"`
-	CategoryId      uuid.UUID          `gorm:"column:CategoryId"`
-	Appointments    []*Appointment     `gorm:"foreignKey:ServiceId;references:ID"`
-	Price           *ServicePrice      `gorm:"foreignKey:ServiceId;references:ID"`
-	ServiceProvider *[]ServiceProvider `gorm:"foreignKey:ServiceId;references:ID"`
-	Attachment      *Attachment        `gorm:"foreignKey:ServiceId;references:ID"`
+	Name            string             `gorm:"column:Name" json:"name"`
+	Description     string             `gorm:"column:Description" json:"description"`
+	CategoryId      uuid.UUID          `gorm:"column:CategoryId" json:"categoryId"`
+	Appointments    []*Appointment     `gorm:"foreignKey:ServiceId;references:Id" json:"appointments"`
+	Price           *ServicePrice      `gorm:"foreignKey:ServiceId;references:Id" json:"price"`
+	ServiceProvider *[]ServiceProvider `gorm:"foreignKey:ServiceId;references:Id" json:"serviceProvider"`
+	Attachment      *Attachment        `gorm:"foreignKey:ServiceId;references:Id" json:"attachment"`
 	Category        *ServiceCategory
 }
 

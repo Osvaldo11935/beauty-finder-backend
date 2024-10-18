@@ -49,14 +49,14 @@ func (handler *RoleHandler) FindAllRole(ctx *gin.Context){
 }
 
 func(handler RoleHandler) FindRoleById(ctx *gin.Context){
-	 statusId, paramErr := uuid.Parse(ctx.Param("statusId")) 
+	 roleId, paramErr := uuid.Parse(ctx.Param("roleId")) 
 
 	 if paramErr != nil {
 		ctx.JSON(http.StatusBadRequest, paramErr)
 		return
 	 }
 
-	 data, findErr := handler.UseCase.FindRoleById(statusId)
+	 data, findErr := handler.UseCase.FindRoleById(roleId)
 
 	 if findErr != nil {
 		ctx.JSON(http.StatusBadRequest, findErr)
@@ -72,7 +72,7 @@ func(handler *RoleHandler) Update(ctx *gin.Context){
 
 	var request models_requests_puts.UpdateRoleRequest
 
-	statusId, paramErr := uuid.Parse(ctx.Param("statusId"))
+	roleId, paramErr := uuid.Parse(ctx.Param("roleId"))
 
 	if paramErr != nil {
 		ctx.JSON(http.StatusBadRequest, paramErr)
@@ -86,7 +86,7 @@ func(handler *RoleHandler) Update(ctx *gin.Context){
 		return
 	}
 
-	updateErr := handler.UseCase.UpdateRole(statusId, request)
+	updateErr := handler.UseCase.UpdateRole(roleId, request)
 
 	if updateErr != nil {
 		ctx.JSON(http.StatusBadRequest, updateErr)
@@ -98,14 +98,14 @@ func(handler *RoleHandler) Update(ctx *gin.Context){
 
 func(handler *RoleHandler) Remove(ctx *gin.Context){
 
-	statusId, paramErr := uuid.Parse(ctx.Param("statusId"))
+	roleId, paramErr := uuid.Parse(ctx.Param("roleId"))
 
 	if paramErr != nil {
 		ctx.JSON(http.StatusBadRequest, paramErr)
 		return
 	}
 
-	deleteErr := handler.UseCase.DeleteRole(statusId)
+	deleteErr := handler.UseCase.DeleteRole(roleId)
 
 	if deleteErr != nil {
 		ctx.JSON(http.StatusBadRequest, deleteErr)

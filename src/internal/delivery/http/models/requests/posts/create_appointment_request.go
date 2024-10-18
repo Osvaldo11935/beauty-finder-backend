@@ -7,7 +7,7 @@ import (
 )
 
 type CreateAppointmentRequest struct {
-	ProviderId    uuid.UUID `json:"providerId"`
+	ProviderId    *uuid.UUID `json:"providerId"`
 	ClientId  uuid.UUID `json:"clientId"`
 	ServiceId uuid.UUID `json:"serviceId"`
 	StartDate extensios.CustomDate `json:"startDate"`

@@ -10,16 +10,17 @@ import (
 
 type Address struct {
 	primitives.BaseAuditableEntity
-	District     string  `gorm:"column:District;"`
-	Commune      string  `gorm:"column:Commune;"`
-	Province     string  `gorm:"column:Province;"`
-	Country      string  `gorm:"column:Country;"`
-	City         string  `gorm:"column:City;"`
-	Street       string  `gorm:"column:Street;"`
-	Neighborhood string  `gorm:"column:Neighborhood;"`
-	Latitude     float64 `gorm:"column:Latitude;"`
-	Longitude    float64 `gorm:"column:Longitude;"`
-	UserId       uuid.UUID  `gorm:"column:UserId;"`
+	District      string     `gorm:"column:District;" json:"district"`
+	Commune       string     `gorm:"column:Commune;" json:"commune"`
+	Province      string     `gorm:"column:Province;" json:"province"`
+	Country       string     `gorm:"column:Country;" json:"country"`
+	City          string     `gorm:"column:City;" json:"city"`
+	Street        string     `gorm:"column:Street;" json:"street"`
+	Neighborhood  string     `gorm:"column:Neighborhood;" json:"neighborhood"`
+	Latitude      float64    `gorm:"column:Latitude;" json:"latitude"`
+	Longitude     float64    `gorm:"column:Longitude;" json:"longitude"`
+	UserId        *uuid.UUID `gorm:"column:UserId;" json:"userId"`
+	AppointmentId *uuid.UUID `gorm:"column:AppointmentId;" json:"appointmentId"`
 }
 
 func (s *Address) TableName() string {
@@ -38,7 +39,25 @@ func NewAddress(userId uuid.UUID, request models_requests_posts.CreateAddressReq
 		Neighborhood:        request.Neighborhood,
 		Latitude:            request.Latitude,
 		Longitude:           request.Longitude,
-		UserId:              userId,
+		UserId:              &userId,
+	}
+
+	return body
+}
+
+func NewAddressAppointment(appointmentId uuid.UUID, request models_requests_posts.CreateAddressRequest) Address {
+	body := Address{
+		BaseAuditableEntity: *primitives.NewBaseAuditableEntity(),
+		District:            request.District,
+		Commune:             request.Commune,
+		Province:            request.Province,
+		Country:             request.Country,
+		City:                request.City,
+		Street:              request.Street,
+		Neighborhood:        request.Neighborhood,
+		Latitude:            request.Latitude,
+		Longitude:           request.Longitude,
+		AppointmentId:       &appointmentId,
 	}
 
 	return body

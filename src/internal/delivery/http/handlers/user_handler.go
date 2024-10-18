@@ -20,12 +20,17 @@ type UserHandler struct {
 }
 
 func (handler *UserHandler) CreateAdmin(ctx *gin.Context) {
-	var request models_requests_posts.CreateUserRequest
+	body, paramExists := ctx.Get("request")
 
-	deserializerErr := ctx.ShouldBindJSON(&request)
+	if !paramExists {
+		ctx.JSON(http.StatusBadRequest, "Request data not found")
+		return
+	}
 
-	if deserializerErr != nil {
-		ctx.JSON(http.StatusBadRequest, deserializerErr)
+	request, serializerErr := body.(models_requests_posts.CreateUserRequest)
+
+	if !serializerErr {
+		ctx.JSON(http.StatusBadRequest, "Failed to parse request")
 		return
 	}
 
@@ -39,12 +44,17 @@ func (handler *UserHandler) CreateAdmin(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, models_responses.NewCreateResponse(*id))
 }
 func (handler *UserHandler) CreateClient(ctx *gin.Context) {
-	var request models_requests_posts.CreateUserRequest
+	body, paramExists := ctx.Get("request")
 
-	deserializerErr := ctx.ShouldBindJSON(&request)
+	if !paramExists {
+		ctx.JSON(http.StatusBadRequest, "Request data not found")
+		return
+	}
 
-	if deserializerErr != nil {
-		ctx.JSON(http.StatusBadRequest, deserializerErr)
+	request, serializerErr := body.(models_requests_posts.CreateUserRequest)
+
+	if !serializerErr {
+		ctx.JSON(http.StatusBadRequest, "Failed to parse request")
 		return
 	}
 
@@ -81,6 +91,28 @@ func (handler *UserHandler) CreateServiceProvider(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, models_responses.NewCreateResponse(*id))
+}
+func (handler *UserHandler) CreateFcmToken(ctx *gin.Context) {
+
+	userId := uuid.MustParse(ctx.Param("userId"))
+
+	var request models_requests_posts.CreateFcmTokenRequest
+
+	deserializerErr := ctx.ShouldBindJSON(&request)
+
+	if deserializerErr != nil {
+		ctx.JSON(http.StatusBadRequest, deserializerErr)
+		return
+	}
+
+	createErr := handler.UseCase.InsertFcmToken(userId, request)
+
+	if createErr != nil {
+		ctx.JSON(http.StatusBadRequest, createErr)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, nil)
 }
 func (handler *UserHandler) CreateServiceProvided(ctx *gin.Context) {
 
@@ -192,7 +224,7 @@ func (handler UserHandler) FindToken(ctx *gin.Context) {
 		return
 	}
 
-	token, generateTokenErr := jwtSecurity.GenerateToken(*user.Email, user.ID.String(), *claims)
+	token, generateTokenErr := jwtSecurity.GenerateToken(user.Email, user.ID.String(), *claims)
 
 	if generateTokenErr != nil {
 		ctx.JSON(http.StatusBadRequest, generateTokenErr)

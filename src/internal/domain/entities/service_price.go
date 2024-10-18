@@ -8,30 +8,30 @@ import (
 
 type ServicePrice struct {
 	primitives.BaseAuditableEntity
-	Amount      float64 `gorm:"column:Amount"`
-    ServiceId uuid.UUID `gorm:"column:ServiceId"`
-	Service *Service 
+	Amount    float64   `gorm:"column:Amount" json:"amount"`
+	ServiceId uuid.UUID `gorm:"column:ServiceId" json:"serviceId"`
+	Service   *Service  `json:"service"`
 }
 
-func(s *ServicePrice) TableName() string{
+func (s *ServicePrice) TableName() string {
 	return "ServicePrice"
 }
 
-func NewServicePrice(amount float64, serviceId uuid.UUID) ServicePrice{
+func NewServicePrice(amount float64, serviceId uuid.UUID) ServicePrice {
 	body := ServicePrice{
-	   BaseAuditableEntity: *primitives.NewBaseAuditableEntity(),
-	   Amount: amount,
-	   ServiceId: serviceId,
-   }
+		BaseAuditableEntity: *primitives.NewBaseAuditableEntity(),
+		Amount:              amount,
+		ServiceId:           serviceId,
+	}
 
-   return body
+	return body
 }
 
-func(s *ServicePrice) Update(amount *float64, serviceId *uuid.UUID){
+func (s *ServicePrice) Update(amount *float64, serviceId *uuid.UUID) {
 	if amount != nil {
-	   s.Amount = *amount
+		s.Amount = *amount
 	}
-	if serviceId != nil{
-       s.ServiceId = *serviceId
+	if serviceId != nil {
+		s.ServiceId = *serviceId
 	}
 }

@@ -8,37 +8,42 @@ import (
 
 type Attachment struct {
 	primitives.BaseAuditableEntity
-	Url              string     `gorm:"column:Url;"`
-	UserId           *uuid.UUID `gorm:"column:UserId;"`
-	ServiceId        *uuid.UUID `gorm:"column:ServiceId;"`
-	CategoryId       *uuid.UUID `gorm:"column:CategoryId;"`
-	AttachmentTypeId string     `gorm:"column:AttachmentTypeId;"`
+	Url              string     `gorm:"column:Url;" json:"url"`
+	UserId           *uuid.UUID `gorm:"column:UserId;" json:"userId"`
+	ServiceId        *uuid.UUID `gorm:"column:ServiceId;" json:"serviceId"`
+	CategoryId       *uuid.UUID `gorm:"column:CategoryId;" json:"categoryId"`
+	AttachmentTypeId uuid.UUID     `gorm:"column:AttachmentTypeId;" json:"attachmentTypeId"`
 	AttachmentType   *AttachmentType
 }
 
 func (s *Attachment) TableName() string {
 	return "Attachment"
 }
-func NewAttachmentCategory(url string, categoryId uuid.UUID) Attachment {
-
-	return Attachment{
-		Url:       url,
-		CategoryId: &categoryId,
-	}
-}
-func NewAttachmentService(url string, serviceId uuid.UUID) Attachment {
-
-	return Attachment{
-		Url:       url,
-		ServiceId: &serviceId,
-	}
-}
-func NewAttachmentUser(url string, userId uuid.UUID) Attachment {
+func NewAttachmentCategory(url string, categoryId uuid.UUID, attachmentTypeId uuid.UUID) Attachment {
 
 	return Attachment{
 		BaseAuditableEntity: *primitives.NewBaseAuditableEntity(),
-		Url:    url,
-		UserId: &userId,
+		Url:        url,
+		CategoryId: &categoryId,
+		AttachmentTypeId: attachmentTypeId,
+	}
+}
+func NewAttachmentService(url string, serviceId uuid.UUID, attachmentTypeId uuid.UUID) Attachment {
+
+	return Attachment{
+		BaseAuditableEntity: *primitives.NewBaseAuditableEntity(),
+		Url:       url,
+		ServiceId: &serviceId,
+		AttachmentTypeId: attachmentTypeId,
+	}
+}
+func NewAttachmentUser(url string, userId uuid.UUID, attachmentTypeId uuid.UUID) Attachment {
+
+	return Attachment{
+		BaseAuditableEntity: *primitives.NewBaseAuditableEntity(),
+		Url:                 url,
+		UserId:              &userId,
+		AttachmentTypeId: attachmentTypeId,
 	}
 }
 

@@ -4,10 +4,10 @@ import "src/internal/domain/primitives"
 
 type ServiceCategory struct {
 	primitives.BaseAuditableEntity
-	Name        string `gorm:"column:Name;"`
-	Description string `gorm:"column:Description;"`
-	Services []*Service `gorm:"foreignKey:CategoryId;references:ID"`
-	Attachment *Attachment `gorm:"foreignKey:CategoryId;references:ID"`
+	Name        string `gorm:"column:Name;" json:"name"`
+	Description string `gorm:"column:Description;" json:"description"`
+	Services []*Service `gorm:"foreignKey:CategoryId;references:Id" json:"services"`
+	Attachment *Attachment `gorm:"foreignKey:CategoryId;references:Id" json:"attachment"`
 }
 
 func(s *ServiceCategory) TableName() string{

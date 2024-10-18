@@ -12,7 +12,7 @@ import (
 
 func main() {
 
-    config, configErr := configs.LoadConfig()
+	config, configErr := configs.LoadConfig()
 	if configErr != nil {
 		fmt.Println("Erro ao carregar as configurações:", configErr)
 		return
@@ -26,18 +26,18 @@ func main() {
 
 	database.RunMigration()
 	database.Seed()
-
+	otherSetup := setup.NewOtherSetup()
 	repositorySetup := setup.NewRepositorySetup()
-    useCaseSetup := setup.NewUseCaseSetup(repositorySetup)
-	handlerSetup := setup.NewHandlerSetup(useCaseSetup)
+	useCaseSetup := setup.NewUseCaseSetup(repositorySetup)
+	handlerSetup := setup.NewHandlerSetup(useCaseSetup, otherSetup)
 
 	pool := usecase.NewPool()
 	go pool.Start()
- 
+
 	route := router.NewRoute(handlerSetup, pool)
 
 	server := &http.Server{
-		Addr: ":"+ config.ServerPort,
+		Addr:    ":" + config.ServerPort,
 		Handler: route,
 	}
 

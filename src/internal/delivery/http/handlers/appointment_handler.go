@@ -12,6 +12,7 @@ import (
 
 type AppointmentHandler struct {
 	UseCase usecase.AppointmentUseCase
+	FcmTokenUseCase usecase.FcmTokenUseCase
 }
 
 func(handler *AppointmentHandler) Create(ctx *gin.Context){
@@ -33,7 +34,15 @@ func(handler *AppointmentHandler) Create(ctx *gin.Context){
 
 	 ctx.JSON(http.StatusOK, models_responses.NewCreateResponse(*id))
 }
+func (handler *AppointmentHandler) DispatchServiceNotification(ctx *gin.Context) {
 
+	serviceId := uuid.MustParse(ctx.Param("serviceId"))
+	appointmentId := uuid.MustParse(ctx.Param("appointmentId"))
+
+	handler.FcmTokenUseCase.DispatchServiceNotification(ctx,serviceId,appointmentId)
+
+	ctx.JSON(http.StatusNoContent, nil)
+}
 func (handler *AppointmentHandler) FindAppointmentByClientId(ctx *gin.Context){
       
 	clientId := uuid.MustParse(ctx.Param("clientId"))
@@ -113,7 +122,33 @@ func(handler *AppointmentHandler) Update(ctx *gin.Context){
 
 	ctx.JSON(http.StatusNoContent, nil)
 }
+func(handler *AppointmentHandler) SetProviderAppointment(ctx *gin.Context){
 
+	var request models_requests_puts.UpdateAppointmentRequest
+
+	appointmentId, paramErr := uuid.Parse(ctx.Param("appointmentId"))
+
+	if paramErr != nil {
+		ctx.JSON(http.StatusBadRequest, paramErr)
+		return
+	}
+
+	deserializeErr := ctx.ShouldBindJSON(&request)
+
+	if deserializeErr != nil {
+		ctx.JSON(http.StatusBadRequest, deserializeErr)
+		return
+	}
+
+	updateErr := handler.UseCase.SetProviderAppointment(appointmentId, request)
+
+	if updateErr != nil {
+		ctx.JSON(http.StatusBadRequest, updateErr)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, nil)
+}
 func(handler *AppointmentHandler) Remove(ctx *gin.Context){
 
 	appointmentId, paramErr := uuid.Parse(ctx.Param("appointmentId"))

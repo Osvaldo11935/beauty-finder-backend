@@ -6,10 +6,10 @@ import (
 
 type BaseAuditableEntity struct {
 	BaseEntity
-	IsActive  bool      `gorm:"column:IsActive;"`
-	IsDeleted bool      `gorm:"column:IsDeleted;"`
-	CreatedAt time.Time `gorm:"column:CreatedAt;"`
-	UpdatedAt time.Time `gorm:"column:UpdatedAt;"`
+	IsActive  bool      `gorm:"column:IsActive;" json:"isActive"`
+	IsDeleted bool      `gorm:"column:IsDeleted;" json:"isDeleted"`
+	CreatedAt time.Time `gorm:"column:CreatedAt;" json:"createdAt"`
+	UpdatedAt time.Time `gorm:"column:UpdatedAt;" json:"updatedAt"`
 }
 
 func NewBaseAuditableEntity() *BaseAuditableEntity {

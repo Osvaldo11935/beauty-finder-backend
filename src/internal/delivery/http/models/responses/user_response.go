@@ -9,9 +9,9 @@ import (
 
 type UserResponse struct {
 	Id          uuid.UUID       `json:"id"`
-	Email       *string         `json:"Email"`
-	UserName    *string         `json:"UserName"`
-	PhoneNumber string          `json:"PhoneNumber"`
+	Email       *string         `json:"email"`
+	UserName    *string         `json:"userName"`
+	PhoneNumber string          `json:"phoneNumber"`
 	Person      *PersonResponse `json:"person"`
 	Conn        *websocket.Conn `json:"conn"`
 	Role        *RoleResponse   `json:"role"`

@@ -18,6 +18,8 @@ type RepositorySetup struct {
 	ServiceRepository           interfaces_repositories.IServiceRepository
 	ServicePriceRepository      interfaces_repositories.IServicePriceRepository
 	UserRepository              interfaces_repositories.IUserRepository
+	RatingTypeRepository        interfaces_repositories.IRatingTypeRepository
+	UserRatingRepository        interfaces_repositories.IUserRatingRepository
 }
 
 func NewRepositorySetup() *RepositorySetup {
@@ -34,5 +36,7 @@ func NewRepositorySetup() *RepositorySetup {
 		ServiceRepository:           repositories.NewServiceRepository(),
 		ServicePriceRepository:      repositories.NewServicePriceRepository(),
 		UserRepository:              repositories.NewUserRepository(),
+		RatingTypeRepository: repositories.NewRatingTypeRepository(),
+		UserRatingRepository: repositories.NewUserRatingRepository(),
 	}
 }

@@ -6,9 +6,9 @@ import (
 
 type AttachmentType struct {
 	primitives.BaseAuditableEntity
-	Type string `gorm:"column:Type;"`
-	Description string `gorm:"column:Description;"`
-	Attachment []*Attachment `gorm:"foreignKey:AttachmentTypeId;references:ID"`
+	Type string `gorm:"column:Type;" json:"type"`
+	Description string `gorm:"column:Description;" json:"description"`
+	Attachment []*Attachment `gorm:"foreignKey:AttachmentTypeId;references:Id" json:"attachment"`
 }
 
 

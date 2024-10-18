@@ -10,6 +10,10 @@ func UnknownFindAddressError(description string) error {
 	return error_common.NewCustomError(error_common.ERR_UNKNOWN,
 		"Falha ao buscar endereço", description, nil)
 }
+func NotFoundFindAddressError() error {
+	return error_common.NewCustomError(error_common.ERR_NOTFOUND,
+		"Falha ao buscar endereço", "Endereço não encontrado.", nil)
+}
 func UnknownDeleteAddressError(description string) error {
 	return error_common.NewCustomError(error_common.ERR_UNKNOWN,
 		"Falha ao deletar endereço", description, nil)

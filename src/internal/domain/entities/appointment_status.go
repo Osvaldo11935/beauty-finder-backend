@@ -4,9 +4,9 @@ import "src/internal/domain/primitives"
 
 type AppointmentStatus struct {
 	primitives.BaseAuditableEntity
-	Type string `gorm:"column:Type;"`
-	Description string `gorm:"column:Description;"`
-	Appointments []*Appointment `gorm:"foreignKey:StatusId;references:ID"`
+	Type string `gorm:"column:Type;" json:"type"`
+	Description string `gorm:"column:Description;" json:"description"`
+	Appointments []*Appointment `gorm:"foreignKey:StatusId;references:Id" json:"appointments"`
 }
 
 

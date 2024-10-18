@@ -5,7 +5,7 @@ import (
 )
 
 type BaseEntity struct {
-	ID           uuid.UUID `gorm:"column:Id;primaryKey"`
+	ID           uuid.UUID `gorm:"column:Id;primaryKey" json:"id"`
 	domainEvents []interface{}
 }
 

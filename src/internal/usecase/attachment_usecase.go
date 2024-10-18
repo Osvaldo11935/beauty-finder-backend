@@ -18,13 +18,13 @@ func (uc *AttachmentUseCase) InsertAttachment(request models_requests_posts.Crea
 
 	var req entities.Attachment
 	if request.UserId != nil {
-		req = entities.NewAttachmentUser(request.Url, *request.UserId)
+		req = entities.NewAttachmentUser(request.Url, *request.UserId, request.AttachmentTypeId)
 	}
 	if request.CategoryId != nil {
-		req = entities.NewAttachmentCategory(request.Url, *request.CategoryId)
+		req = entities.NewAttachmentCategory(request.Url, *request.CategoryId, request.AttachmentTypeId)
 	}
 	if request.ServiceId != nil {
-		req = entities.NewAttachmentService(request.Url, *request.ServiceId)
+		req = entities.NewAttachmentService(request.Url, *request.ServiceId, request.AttachmentTypeId)
 	}
 
 	createErr := uc.Repo.Insert(&req)
@@ -50,7 +50,34 @@ func (uc *AttachmentUseCase) FindAttachmentByUserId(userId uuid.UUID) ([]entitie
 
 	return data, nil
 }
+func (uc *AttachmentUseCase) FindAttachmentByCategoryId(categoryId uuid.UUID) (*entities.Attachment, error) {
 
+	var data *entities.Attachment
+
+	findErr := uc.Repo.Query().
+		Preload("AttachmentType").
+		Find(&data, "CategoryId", categoryId).Error
+
+	if findErr != nil {
+		return nil, errors.UnknownFindAttachmentError(findErr.Error())
+	}
+
+	return data, nil
+}
+func (uc *AttachmentUseCase) FindAttachmentByServiceId(serviceId uuid.UUID) (*entities.Attachment, error) {
+
+	var data *entities.Attachment
+
+	findErr := uc.Repo.Query().
+		Preload("AttachmentType").
+		Find(&data, "ServiceId", serviceId).Error
+
+	if findErr != nil {
+		return nil, errors.UnknownFindAttachmentError(findErr.Error())
+	}
+
+	return data, nil
+}
 func (uc *AttachmentUseCase) FindAttachmentById(AttachmentId uuid.UUID) (*entities.Attachment, error) {
 	var data entities.Attachment
 

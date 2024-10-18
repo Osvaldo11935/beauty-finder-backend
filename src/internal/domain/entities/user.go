@@ -9,20 +9,23 @@ import (
 
 type User struct {
 	primitives.BaseAuditableEntity
-	Email               *string             `gorm:"column:Email"`
-	UserName            *string             `gorm:"column:UserName"`
-	Password            *string             `gorm:"column:Password"`
-	PhoneNumber         string             `gorm:"column:PhoneNumber"`
-	RoleId              uuid.UUID          `gorm:"column:RoleId"`
-	Person              *Person            `gorm:"foreignKey:UserId;references:ID"`
-	ServicesProvided    []*ServiceProvider `gorm:"foreignKey:ProviderId;references:ID"`
+	Email               *string            `gorm:"column:Email" json:"email"`
+	UserName            *string            `gorm:"column:UserName" json:"userName"`
+	Password            *string            `gorm:"column:Password" json:"password"`
+	PhoneNumber         string             `gorm:"column:PhoneNumber" json:"phoneNumber"`
+	RoleId              uuid.UUID          `gorm:"column:RoleId" json:"roleId"`
+	Person              *Person            `gorm:"foreignKey:UserId;references:ID" json:"person"`
+	ServicesProvided    []*ServiceProvider `gorm:"foreignKey:ProviderId;references:ID" json:"servicesProvided"`
 	Conn                *websocket.Conn    `gorm:"-"`
-	Attachment          []*Attachment      `gorm:"foreignKey:UserId;references:ID"`
-	MessagesReceiver    []*Message         `gorm:"foreignKey:ReceiverId;references:ID"`
-	MessagesSender      []*Message         `gorm:"foreignKey:SenderId;references:ID"`
-	AppointmentProvider []*Appointment     `gorm:"foreignKey:ProviderId;references:ID"`
-	AppointmentClient   []*Appointment     `gorm:"foreignKey:ClientId;references:ID"`
-	Address             *Address           `gorm:"foreignKey:UserId;references:ID"`
+	Attachment          []*Attachment      `gorm:"foreignKey:UserId;references:Id" json:"attachment"`
+	MessagesReceiver    []*Message         `gorm:"foreignKey:ReceiverId;references:Id" json:"messagesReceiver"`
+	MessagesSender      []*Message         `gorm:"foreignKey:SenderId;references:Id" json:"messagesSender"`
+	AppointmentProvider []*Appointment     `gorm:"foreignKey:ProviderId;references:Id" json:"appointmentProvider"`
+	AppointmentClient   []*Appointment     `gorm:"foreignKey:ClientId;references:Id" json:"appointmentClient"`
+	Address             *Address           `gorm:"foreignKey:UserId;references:Id" json:"address"`
+	FcmToken            []*FcmToken        `gorm:"foreignKey:UserId;references:Id" json:"fcmToken"`
+	UserEvaluator       *UserRating        `gorm:"foreignKey:UserEvaluatorId;references:Id" json:"userEvaluator"`
+	UserAvaluated       *UserRating        `gorm:"foreignKey:UserAvaluatedId;references:Id" json:"userAvaluated"`
 	Role                *Role
 }
 
@@ -69,6 +72,16 @@ func (s *User) SetServicesProvided(serviceIds []uuid.UUID) {
 		}
 		s.ServicesProvided = append(s.ServicesProvided, &req)
 	}
+}
+func (s *User) SetFcmToken(fcmToken string, deviceName string, deviceId string) {
+	req := FcmToken{
+		BaseAuditableEntity: *primitives.NewBaseAuditableEntity(),
+		TokenFcm:            fcmToken,
+		DeviceName:          deviceName,
+		DeviceId:            deviceId,
+		UserId:              s.ID,
+	}
+	s.FcmToken = append(s.FcmToken, &req)
 }
 
 func (s *User) SendMessage(message *Message) error {

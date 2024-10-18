@@ -1,8 +1,10 @@
 package models_responses
 
 import (
-	"github.com/google/uuid"
 	"src/internal/domain/entities"
+	"strings"
+
+	"github.com/google/uuid"
 )
 
 type AddressResponse struct {
@@ -16,8 +18,35 @@ type AddressResponse struct {
 	Neighborhood string    `json:"neighborhood"`
 	Latitude     float64   `json:"latitude"`
 	Longitude    float64   `json:"longitude"`
+	Address      string    `json:"address"`
 }
 
+func GenerateAddress(data *entities.Address) string {
+	var parts []string
+
+	if data.Country != "" {
+		parts = append(parts, data.Country)
+	}
+	if data.Province != "" {
+		parts = append(parts, data.Province)
+	}
+	if data.City != "" {
+		parts = append(parts, data.City)
+	}
+	if data.Commune != "" {
+		parts = append(parts, data.Commune)
+	}
+	if data.District != "" {
+		parts = append(parts, data.District)
+	}
+	if data.Neighborhood != "" {
+		parts = append(parts, data.Neighborhood)
+	}
+	if data.Street != "" {
+		parts = append(parts, data.Street)
+	}
+	return strings.Join(parts, ",")
+}
 func ToAddressResponse(data *entities.Address) *AddressResponse {
 
 	if data == nil {
@@ -35,6 +64,7 @@ func ToAddressResponse(data *entities.Address) *AddressResponse {
 		Neighborhood: data.Neighborhood,
 		Latitude:     data.Latitude,
 		Longitude:    data.Longitude,
+		Address:      GenerateAddress(data),
 	}
 }
 

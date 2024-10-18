@@ -36,6 +36,6 @@ func NewRoute(setup *setup.HandlerSetup, pool *usecase.Pool) *gin.Engine {
 	route_group.NewServiceRouteGroup(baseRoute, *setup)
 	route_group.NewUserRouteGroup(baseRoute, *setup)
 	route_group.NewChatRouteGroup(baseRoute, &setup.UserHandler.UseCase, pool)
-
+    route_group.NewWebSocketRouteGroup(baseRoute, &setup.AppointmentHandler.UseCase);
 	return router
 }

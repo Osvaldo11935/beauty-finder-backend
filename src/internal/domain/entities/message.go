@@ -12,8 +12,8 @@ type Message struct {
 	Body       string    `gorm:"column:Body;" json:"body"`
 	SenderId   uuid.UUID `gorm:"column:SenderId;" json:"senderId"`
 	ReceiverId uuid.UUID `gorm:"column:ReceiverId;" json:"receiverId"`
-	Receiver   *User
-	Sender     *User
+	Receiver   *User `json:"receiver"`
+	Sender     *User`json:"sender"`
 }
 
 func (s *Message) TableName() string {

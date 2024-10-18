@@ -19,6 +19,9 @@ type UseCaseSetup struct {
 	UseCaseServicePrice usecase.ServicePriceUseCase
 	UseCaseUser usecase.UserUseCase
 	UseCaseHttpClient usecase.HttpClientUseCase
+	UseCaseFcmToken usecase.FcmTokenUseCase
+	UseCaseRatingType usecase.RatingTypeUseCase
+	UseCaseUserRating usecase.UserRatingUseCase
 }
 
 func NewUseCaseSetup(setup *RepositorySetup) *UseCaseSetup{
@@ -35,6 +38,9 @@ func NewUseCaseSetup(setup *RepositorySetup) *UseCaseSetup{
 		UseCaseService: usecase.ServiceUseCase{Repo: setup.ServiceRepository},
 		UseCaseServicePrice: usecase.ServicePriceUseCase{Repo: setup.ServicePriceRepository},
 		UseCaseUser: usecase.UserUseCase{Repo: setup.PersonRepository},
+		UseCaseUserRating: usecase.UserRatingUseCase{Repo: setup.UserRatingRepository},
+		UseCaseRatingType: usecase.RatingTypeUseCase{Repo: setup.RatingTypeRepository},
 		UseCaseHttpClient: *usecase.NewHttpClientUseCase(3600 * time.Second),
+		UseCaseFcmToken: usecase.FcmTokenUseCase{ UserUseCase: usecase.UserUseCase{Repo: setup.PersonRepository}},
 	}
 }

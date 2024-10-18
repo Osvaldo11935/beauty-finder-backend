@@ -15,6 +15,7 @@ func Seed() {
 		return
 	}
 	SeedRole(db)
+	SeedRatingType(db)
 	SeedStatusType(db)
 }
 
@@ -59,6 +60,51 @@ func SeedRole(db *gorm.DB) {
 		err := db.FirstOrCreate(&rl).Error
 		if err != nil {
 			log.Printf("Failed to seed status type %s: %v", rl.Name, err)
+		}
+	}
+}
+
+func SeedRatingType(db *gorm.DB) {
+	roles := []entities.RatingType{
+		{
+			BaseAuditableEntity: primitives.BaseAuditableEntity{
+				BaseEntity: primitives.BaseEntity{
+					ID: object_values.RATING_TYPE_BAD_ID,
+				},
+				IsActive:  true,
+				CreatedAt: time.Now(),
+				UpdatedAt: time.Now(),
+			},
+			Type: object_values.RATING_TYPE_BAD_NAME,
+		},
+		{
+			BaseAuditableEntity: primitives.BaseAuditableEntity{
+				BaseEntity: primitives.BaseEntity{
+					ID: object_values.RATING_TYPE_NORMAL_ID,
+				},
+				IsActive:  true,
+				CreatedAt: time.Now(),
+				UpdatedAt: time.Now(),
+			},
+			Type: object_values.RATING_TYPE_NORMAL_NAME,
+		},
+		{
+			BaseAuditableEntity: primitives.BaseAuditableEntity{
+				BaseEntity: primitives.BaseEntity{
+					ID: object_values.RATING_TYPE_EXCELLENT_ID,
+				},
+				IsActive:  true,
+				CreatedAt: time.Now(),
+				UpdatedAt: time.Now(),
+			},
+			Type: object_values.RATING_TYPE_EXCELLENT_NAME,
+		},
+	}
+
+	for _, rl := range roles {
+		err := db.FirstOrCreate(&rl).Error
+		if err != nil {
+			log.Printf("Failed to seed status type %s: %v", rl.Type, err)
 		}
 	}
 }

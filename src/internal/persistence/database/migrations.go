@@ -19,6 +19,7 @@ func RunMigration() {
 		entities.Appointment{},
 		entities.Role{},
 		entities.User{},
+		entities.FcmToken{},
 		entities.Address{},
 		entities.AttachmentType{},
 		entities.Attachment{},

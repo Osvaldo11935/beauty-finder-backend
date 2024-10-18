@@ -9,17 +9,17 @@ import (
 
 type Person struct {
 	primitives.BaseAuditableEntity
-	FullName              string               `gorm:"column:FullName;"`
-	BirthDate             extensios.CustomDate `gorm:"column:BirthDate;"`
-	Gender                string               `gorm:"column:Gender;"`
-	Naturalness           string               `gorm:"column:Naturalness;"`
-	MaritalStatus         string               `gorm:"column:MaritalStatus;"`
-	FatherName            string               `gorm:"column:FatherName;"`
-	MotherName            string               `gorm:"column:MotherName;"`
-	NationalRegistry      string               `gorm:"column:NationalRegistry;"`
-	PlaceIssuanceDocument string               `gorm:"column:PlaceIssuanceDocument;"`
-	DateIssueDocument     extensios.CustomDate `gorm:"column:DateIssueDocument;"`
-	UserId                *uuid.UUID           `gorm:"column:UserId;"`
+	FullName              string               `gorm:"column:FullName;" json:"fullName"`
+	BirthDate             extensios.CustomDate `gorm:"column:BirthDate;" json:"birthDate"`
+	Gender                string               `gorm:"column:Gender;" json:"gender"`
+	Naturalness           string               `gorm:"column:Naturalness;" json:"naturalness"`
+	MaritalStatus         string               `gorm:"column:MaritalStatus;" json:"maritalStatus"`
+	FatherName            string               `gorm:"column:FatherName;" json:"fatherName"`
+	MotherName            string               `gorm:"column:MotherName;" json:"motherName"`
+	NationalRegistry      string               `gorm:"column:NationalRegistry;" json:"nationalRegistry"`
+	PlaceIssuanceDocument string               `gorm:"column:PlaceIssuanceDocument;" json:"placeIssuanceDocument"`
+	DateIssueDocument     extensios.CustomDate `gorm:"column:DateIssueDocument;" json:"dateIssueDocument"`
+	UserId                *uuid.UUID           `gorm:"column:UserId;" json:"userId"`
 }
 
 func (s *Person) TableName() string {
