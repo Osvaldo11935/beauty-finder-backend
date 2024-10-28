@@ -4,23 +4,24 @@ import (
 	"log"
 	"os"
 	"strconv"
+
 	"github.com/joho/godotenv"
 )
 
 type Config struct {
-	DBHost               string
-	DBPort               int
-	DBUser               string
-	DBName               string
-	DBPassword           string
-	ServerPort           string
-	JwtSecretKey         string
-	PgConnectionString   string
-	FileKeys             string
-	Bucket               string
-	BaseUrlGoogleStorage string
-	QueryingPersonData   string
-	FileConfigFirebase string
+	DBHost                string
+	DBPort                int
+	DBUser                string
+	DBName                string
+	DBPassword            string
+	ServerPort            string
+	JwtSecretKey          string
+	PgConnectionString    string
+	FileKeys              string
+	Bucket                string
+	BaseUrlGoogleStorage  string
+	QueryingPersonData    string
+	FileConfigFirebase    string
 	FileConfigGoogleDrive string
 }
 
@@ -35,20 +36,20 @@ func LoadConfig() (*Config, error) {
 		log.Printf("Invalid DB_PORT: %v", err)
 		return nil, err
 	}
-
+	log.Println("Servidor iniciado na porta", os.Getenv("PORT"))
 	config := &Config{
-		DBHost:               os.Getenv("DB_HOST"),
-		DBPort:               port,
-		DBUser:               os.Getenv("DB_USER"),
-		DBPassword:           os.Getenv("DB_PASSWORD"),
-		DBName:               os.Getenv("DB_NAME"),
-		ServerPort:           os.Getenv("PORT"),
-		JwtSecretKey:         os.Getenv("JWT_SECRET_KEY"),
-		PgConnectionString:   os.Getenv("POSTGRES_CONNECTION_STRING"),
-		FileKeys:             os.Getenv("FILE_CONFIG_GOOGLE_STORAGE"),
-		Bucket:               os.Getenv("BUCKET_NAME"),
-		BaseUrlGoogleStorage: os.Getenv("BASE_URL_GOOGLE_STORAGE"),
-		FileConfigFirebase: os.Getenv("FILE_CONFIG_FIREBASE"),
+		DBHost:                os.Getenv("DB_HOST"),
+		DBPort:                port,
+		DBUser:                os.Getenv("DB_USER"),
+		DBPassword:            os.Getenv("DB_PASSWORD"),
+		DBName:                os.Getenv("DB_NAME"),
+		ServerPort:            os.Getenv("PORT"),
+		JwtSecretKey:          os.Getenv("JWT_SECRET_KEY"),
+		PgConnectionString:    os.Getenv("POSTGRES_CONNECTION_STRING"),
+		FileKeys:              os.Getenv("FILE_CONFIG_GOOGLE_STORAGE"),
+		Bucket:                os.Getenv("BUCKET_NAME"),
+		BaseUrlGoogleStorage:  os.Getenv("BASE_URL_GOOGLE_STORAGE"),
+		FileConfigFirebase:    os.Getenv("FILE_CONFIG_FIREBASE"),
 		FileConfigGoogleDrive: os.Getenv("FILE_CONFIG_GOOGLE_DRIVE"),
 	}
 
