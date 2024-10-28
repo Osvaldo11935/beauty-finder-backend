@@ -16,6 +16,7 @@ type UserRating struct {
 	Reason          string    `gorm:"column:Reason" json:"reason"`
 	UserEvaluator   *User     `gorm:"-" json:"userEvaluator"`
 	UserAvaluated   *User     `gorm:"-" json:"userAvaluated"`
+	RatingType *RatingType `gorm:"-" json:"ratingType"`
 }
 
 func (s *UserRating) TableName() string {

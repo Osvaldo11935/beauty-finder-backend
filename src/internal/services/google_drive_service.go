@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"src/internal/configs"
 	service_interface "src/internal/services/interface_services"
 
 	"github.com/gin-gonic/gin"
@@ -23,7 +24,13 @@ type GoogleDriveService struct {
 }
 
 func NewGoogleDriveService() service_interface.IFileManager {
-	b, err := os.ReadFile("../qwertyuu.json")
+	envConfig, loadConfigErr := configs.LoadConfig()
+
+	if loadConfigErr != nil {
+		return nil
+	}
+
+	b, err := os.ReadFile(envConfig.FileConfigGoogleDrive)
 	if err != nil {
 		log.Fatalf("unable to read client secret file: %v", err)
 		return nil

@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	"log"
 	err "errors"
+	"log"
 	models_requests_posts "src/internal/delivery/http/models/requests/posts"
 	models_requests_puts "src/internal/delivery/http/models/requests/put"
 	"src/internal/domain/entities"
@@ -13,6 +13,11 @@ import (
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
+
+type NearbyUser struct {
+	User     entities.User
+	Distance float64
+}
 
 type UserUseCase struct {
 	Repo interfaces_repositories.IUserRepository
@@ -34,6 +39,7 @@ func (uc *UserUseCase) InsertUser(roleId uuid.UUID, request models_requests_post
 
 	return &req.ID, nil
 }
+
 func (uc *UserUseCase) InsertServiceProvided(userId uuid.UUID, serviceIds []uuid.UUID) error {
 
 	var user entities.User
@@ -45,7 +51,7 @@ func (uc *UserUseCase) InsertServiceProvided(userId uuid.UUID, serviceIds []uuid
 		First(&user).Error
 
 	if findErr != nil {
-		if err.Is(findErr, gorm.ErrRecordNotFound){
+		if err.Is(findErr, gorm.ErrRecordNotFound) {
 			return errors.NotFoundServiceProviderError()
 		}
 		return errors.UnknownCreateUserError(findErr.Error())
@@ -54,13 +60,14 @@ func (uc *UserUseCase) InsertServiceProvided(userId uuid.UUID, serviceIds []uuid
 	user.SetServicesProvided(serviceIds)
 
 	uc.Repo.Remove(user.ServicesProvided)
-	
+
 	createErr := uc.Repo.Insert(user.ServicesProvided)
 	if createErr != nil {
 		return errors.UnknownDeleteUserError(createErr.Error())
 	}
 	return nil
 }
+
 func (uc *UserUseCase) InsertFcmToken(userId uuid.UUID, fcmToken models_requests_posts.CreateFcmTokenRequest) error {
 
 	var user entities.User
@@ -71,26 +78,27 @@ func (uc *UserUseCase) InsertFcmToken(userId uuid.UUID, fcmToken models_requests
 		First(&user).Error
 
 	if findErr != nil {
-		if err.Is(findErr, gorm.ErrRecordNotFound){
+		if err.Is(findErr, gorm.ErrRecordNotFound) {
 			return errors.NotFoundUserError()
 		}
 		return errors.UnknownCreateUserError(findErr.Error())
 	}
 
 	user.SetFcmToken(
-		fcmToken.FcmToken, 
+		fcmToken.FcmToken,
 		fcmToken.DeviceName,
 		fcmToken.DeviceId,
 	)
 
 	uc.Repo.Remove(user.FcmToken)
-	
+
 	createErr := uc.Repo.Insert(user.FcmToken)
 	if createErr != nil {
 		return errors.UnknownDeleteUserError(createErr.Error())
 	}
 	return nil
 }
+
 func (uc *UserUseCase) FindAllUser() ([]entities.User, error) {
 
 	var data []entities.User
@@ -106,6 +114,7 @@ func (uc *UserUseCase) FindAllUser() ([]entities.User, error) {
 
 	return data, nil
 }
+
 func (uc *UserUseCase) FindUserByServiceId(serviceId uuid.UUID) ([]entities.User, error) {
 
 	var users []entities.User
@@ -129,20 +138,26 @@ func (uc *UserUseCase) FindUserByServiceId(serviceId uuid.UUID) ([]entities.User
 
 	return users, nil
 }
+
 func (uc *UserUseCase) FindUserById(UserId uuid.UUID) (*entities.User, error) {
 	var data entities.User
 
 	findErr := uc.Repo.Query().
 		Preload("Role").
 		Preload("Person").
+		Preload("FcmToken").
 		First(&data, "Id", UserId).Error
 
 	if findErr != nil {
+		if err.Is(findErr, gorm.ErrRecordNotFound) {
+			return nil, errors.NotFoundUserError()
+		}
 		return nil, errors.UnknownFindUserError(findErr.Error())
 	}
 
 	return &data, nil
 }
+
 func (uc *UserUseCase) FindUserByCredentials(email string, password string) (*entities.User, *[]string, error) {
 
 	var claims []string
@@ -164,6 +179,7 @@ func (uc *UserUseCase) FindUserByCredentials(email string, password string) (*en
 
 	return &userData, &claims, nil
 }
+
 func (uc *UserUseCase) FindUserByPhoneNumber(phoneNumber string) (*entities.User, *[]string, error) {
 
 	var claims []string
@@ -173,9 +189,12 @@ func (uc *UserUseCase) FindUserByPhoneNumber(phoneNumber string) (*entities.User
 	findUserErr := uc.Repo.Query().
 		Preload("Role").
 		Where("PhoneNumber", phoneNumber).
-	    First(&userData).Error
+		First(&userData).Error
 
 	if findUserErr != nil {
+		if err.Is(findUserErr, gorm.ErrRecordNotFound) {
+			return nil, nil, errors.NotFoundUserError()
+		}
 		log.Printf("Erro ao buscar dados do usuario: %v", findUserErr)
 		return nil, nil, errors.InvalidCredentialError()
 	}
@@ -185,7 +204,33 @@ func (uc *UserUseCase) FindUserByPhoneNumber(phoneNumber string) (*entities.User
 
 	return &userData, &claims, nil
 }
-func (uc *UserUseCase) FindUsersNearBy(serviceId uuid.UUID, latitude float64, longitude float64, radiusKm float64) ([]interface{}, error) {
+
+func (uc *UserUseCase) FindUserByEmail(email string) (*entities.User, *[]string, error) {
+
+	var claims []string
+
+	var userData entities.User
+
+	findUserErr := uc.Repo.Query().
+		Preload("Role").
+		Where("Email", email).
+		First(&userData).Error
+
+	if findUserErr != nil {
+		if err.Is(findUserErr, gorm.ErrRecordNotFound) {
+			return nil, nil, errors.NotFoundUserError()
+		}
+		log.Printf("Erro ao buscar dados do usuario: %v", findUserErr)
+		return nil, nil, errors.InvalidCredentialError()
+	}
+
+	roleData := userData.Role
+	claims = append(claims, roleData.Name)
+
+	return &userData, &claims, nil
+}
+
+func (uc *UserUseCase) FindUsersNearBy(serviceId uuid.UUID, latitude float64, longitude float64, radiusKm float64) ([]*NearbyUser, error) {
 
 	var serviceProviders []entities.ServiceProvider
 
@@ -193,28 +238,31 @@ func (uc *UserUseCase) FindUsersNearBy(serviceId uuid.UUID, latitude float64, lo
 		Preload("Provider.Address").
 		Preload("Provider.Role").
 		Preload("Provider.Person").
+		Preload("Provider.FcmToken").
 		Find(&serviceProviders).Error; err != nil {
 		return nil, err
 	}
 
-	var nearbyUsers []interface{}
+	var nearbyUsers []*NearbyUser
 
 	for _, serviceProvider := range serviceProviders {
+
 		distance := Haversine(latitude, longitude, serviceProvider.Provider.Address.Latitude, serviceProvider.Provider.Address.Longitude)
+
 		if distance <= radiusKm {
-			nearbyUser := struct {
-				User     entities.User
-				Distance float64
-			}{
+
+			nearbyUser := NearbyUser{
 				User:     *serviceProvider.Provider,
 				Distance: distance,
 			}
-			nearbyUsers = append(nearbyUsers, nearbyUser)
+
+			nearbyUsers = append(nearbyUsers, &nearbyUser)
 		}
 	}
 
 	return nearbyUsers, nil
 }
+
 func (uc *UserUseCase) UpdateUser(UserId uuid.UUID, request models_requests_puts.UpdateUserRequest) error {
 
 	User, findErr := uc.FindUserById(UserId)
@@ -238,6 +286,7 @@ func (uc *UserUseCase) UpdateUser(UserId uuid.UUID, request models_requests_puts
 
 	return nil
 }
+
 func (uc *UserUseCase) DeleteUser(UserId uuid.UUID) error {
 
 	User, findErr := uc.FindUserById(UserId)

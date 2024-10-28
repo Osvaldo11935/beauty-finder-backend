@@ -14,5 +14,5 @@ type CreatePersonRequest struct{
 	MotherName            string `json:"motherName"`                         
 	NationalRegistry      string `json:"nationalRegistry"`              
 	PlaceIssuanceDocument string `json:"placeIssuanceDocument"`              
-	DateIssueDocument     extensios.CustomDate `json:"dateIssueDocument"`
+	DateIssueDocument     *extensios.CustomDate `json:"dateIssueDocument"`
 }

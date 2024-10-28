@@ -10,7 +10,7 @@ import (
 type PersonResponse struct {
 	Id                    uuid.UUID            `json:"id"`
 	FullName              string               `json:"fullName"`
-	BirthDate             extensios.CustomDate `json:"birthDate"`
+	BirthDate             *extensios.CustomDate `json:"birthDate"`
 	Gender                string               `json:"gender"`
 	Naturalness           string               `json:"naturalness"`
 	MaritalStatus         string               `json:"maritalStatus"`
@@ -18,7 +18,7 @@ type PersonResponse struct {
 	MotherName            string               `json:"motherName"`
 	NationalRegistry      string               `json:"nationalRegistry"`
 	PlaceIssuanceDocument string               `json:"placeIssuanceDocument"`
-	DateIssueDocument     extensios.CustomDate `json:"dateIssueDocument"`
+	DateIssueDocument     *extensios.CustomDate `json:"dateIssueDocument"`
 }
 
 
@@ -52,7 +52,7 @@ func ToPersonResponse(data *entities.Person) *PersonResponse {
 	return &PersonResponse{
 		Id: data.ID,               
 		FullName: data.FullName, 
-		BirthDate: data.BirthDate,            
+		BirthDate: &data.BirthDate,            
 		Gender: data.Gender,               
 		Naturalness: data.Naturalness,         
 		MaritalStatus: data.MaritalStatus,        

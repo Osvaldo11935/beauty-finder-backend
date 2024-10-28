@@ -39,6 +39,7 @@ func NewUseCaseSetup(setup *RepositorySetup) *UseCaseSetup{
 		UseCaseServicePrice: usecase.ServicePriceUseCase{Repo: setup.ServicePriceRepository},
 		UseCaseUser: usecase.UserUseCase{Repo: setup.PersonRepository},
 		UseCaseUserRating: usecase.UserRatingUseCase{Repo: setup.UserRatingRepository},
+
 		UseCaseRatingType: usecase.RatingTypeUseCase{Repo: setup.RatingTypeRepository},
 		UseCaseHttpClient: *usecase.NewHttpClientUseCase(3600 * time.Second),
 		UseCaseFcmToken: usecase.FcmTokenUseCase{ UserUseCase: usecase.UserUseCase{Repo: setup.PersonRepository}},

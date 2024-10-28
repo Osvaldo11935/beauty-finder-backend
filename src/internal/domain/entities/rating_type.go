@@ -10,7 +10,7 @@ type RatingType struct {
 	primitives.BaseAuditableEntity
 	Type string `gorm:"column:Type;" json:"type"`
 	Description string `gorm:"column:Description;" json:"description"`
-	UserRating UserRating   `gorm:"foreignKey:RatingTypeId;references:Id" json:"userAvaluated"`
+	UserRating []*UserRating   `gorm:"foreignKey:RatingTypeId;references:Id" json:"userAvaluated"`
 }
 
 func(s *RatingType) TableName() string{

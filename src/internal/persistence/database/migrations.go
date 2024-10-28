@@ -27,12 +27,13 @@ func RunMigration() {
 		entities.Person{},
 		entities.ServicePrice{},
 		entities.ServiceProvider{},
+		entities.RatingType{},
+		entities.UserRating{},
 	)
 
 	if migrationErr != nil {
 		log.Panic("Erro ao executar migrations", migrationErr)
 		return
 	}
-
 
 }

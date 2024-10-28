@@ -9,7 +9,7 @@ type UserRatingResponse struct {
 	Id   uuid.UUID `json:"id"`
 	UserEvaluator *UserResponse `json:"userEvaluator"`
 	UserAvaluated *UserResponse `json:"userAvaluated"`
-	UserRating   *UserRatingResponse `json:"UserRating"`
+	RatingType   *RatingTypeResponse `json:"UserRating"`
 	Reason          string    `json:"reason"`
 }
 
@@ -20,6 +20,7 @@ func ToUserRatingResponse(data *entities.UserRating) *UserRatingResponse {
 	return &UserRatingResponse{
 		Id:   data.ID,
 		Reason: data.Reason,
+		RatingType: ToRatingTypeResponse(data.RatingType),
 		UserEvaluator: ToUserResponse(data.UserEvaluator),
 		UserAvaluated: ToUserResponse(data.UserAvaluated),
 	}

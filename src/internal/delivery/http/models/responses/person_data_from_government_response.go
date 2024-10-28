@@ -14,7 +14,7 @@ type PersonByNationalRegistry struct {
 type PersonDataFromGovernmentResponse struct {
 	Id                    uuid.UUID            `json:"id"`
 	FullName              string               `json:"nome"`
-	BirthDate             extensios.CustomDate `json:"data_nasc"`
+	BirthDate             *extensios.CustomDate `json:"data_nasc"`
 	Gender                string               `json:"genero"`
 	Naturalness           string               `json:"naturalidade"`
 	MaritalStatus         string               `json:"estado_civil"`
@@ -22,6 +22,6 @@ type PersonDataFromGovernmentResponse struct {
 	MotherName            string               `json:"mae_nome_completo"`
 	NationalRegistry      string               `json:"nif"`
 	PlaceIssuanceDocument string               `json:"emissao_local"`
-	DateIssueDocument     extensios.CustomDate `json:"data_emissao"`
+	DateIssueDocument     *extensios.CustomDate `json:"data_emissao"`
 }
 

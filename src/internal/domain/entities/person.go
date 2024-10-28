@@ -18,7 +18,7 @@ type Person struct {
 	MotherName            string               `gorm:"column:MotherName;" json:"motherName"`
 	NationalRegistry      string               `gorm:"column:NationalRegistry;" json:"nationalRegistry"`
 	PlaceIssuanceDocument string               `gorm:"column:PlaceIssuanceDocument;" json:"placeIssuanceDocument"`
-	DateIssueDocument     extensios.CustomDate `gorm:"column:DateIssueDocument;" json:"dateIssueDocument"`
+	DateIssueDocument     *extensios.CustomDate `gorm:"column:DateIssueDocument;" json:"dateIssueDocument"`
 	UserId                *uuid.UUID           `gorm:"column:UserId;" json:"userId"`
 }
 
@@ -27,7 +27,7 @@ func (s *Person) TableName() string {
 }
 
 func NewPerson(fullName string, birthDate extensios.CustomDate, gender string, naturalness string, maritalStatus string,
-	fatherName string, motherName string, nationalRegistry string, placeIssuanceDocument string, dateIssueDocument extensios.CustomDate, userId *uuid.UUID) Person {
+	fatherName string, motherName string, nationalRegistry string, placeIssuanceDocument string, dateIssueDocument *extensios.CustomDate, userId *uuid.UUID) Person {
 	return Person{
 		BaseAuditableEntity:   *primitives.NewBaseAuditableEntity(),
 		FullName:              fullName,
@@ -76,7 +76,7 @@ func (s *Person) Update(fullName *string, birthDate *extensios.CustomDate, gende
 		s.PlaceIssuanceDocument = *placeIssuanceDocument
 	}
 	if dateIssueDocument != nil {
-		s.DateIssueDocument = *dateIssueDocument
+		s.DateIssueDocument = dateIssueDocument
 	}
 	if userId != nil {
 		s.UserId = userId

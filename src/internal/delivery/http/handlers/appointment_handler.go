@@ -36,10 +36,19 @@ func(handler *AppointmentHandler) Create(ctx *gin.Context){
 }
 func (handler *AppointmentHandler) DispatchServiceNotification(ctx *gin.Context) {
 
+	var request models_requests_posts.DispatchServiceNotification
+
 	serviceId := uuid.MustParse(ctx.Param("serviceId"))
 	appointmentId := uuid.MustParse(ctx.Param("appointmentId"))
 
-	handler.FcmTokenUseCase.DispatchServiceNotification(ctx,serviceId,appointmentId)
+	paramErr := ctx.ShouldBindJSON(request)
+
+	if paramErr != nil {
+		ctx.JSON(http.StatusBadRequest, paramErr)
+		return
+	}
+
+	handler.FcmTokenUseCase.DispatchServiceNotification(ctx,serviceId, appointmentId, request)
 
 	ctx.JSON(http.StatusNoContent, nil)
 }

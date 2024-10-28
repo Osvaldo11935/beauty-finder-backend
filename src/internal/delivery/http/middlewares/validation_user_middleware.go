@@ -5,6 +5,7 @@ import (
 	models_requests_posts "src/internal/delivery/http/models/requests/posts"
 	"src/internal/delivery/http/validators"
 	"src/internal/domain/errors"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,6 +22,7 @@ func ValidateUserMiddleware() gin.HandlerFunc {
 		}
         
 		validationErrors := validators.ValidateCreateUser(&request)
+		
 		if validationErrors != nil {
 			c.JSON(http.StatusBadRequest, validationErrors)
 			c.Abort()

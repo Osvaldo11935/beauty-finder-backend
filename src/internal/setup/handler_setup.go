@@ -40,6 +40,6 @@ func NewHandlerSetup(setup *UseCaseSetup, otherSetup *OtherSetup) *HandlerSetup 
 		ServicePriceHandler:    handlers.ServicePriceHandler{UseCase: setup.UseCaseServicePrice},
 		UserHandler:            handlers.UserHandler{UseCase: setup.UseCaseUser},
 		RatingTypeHandler:      handlers.RatingTypeHandler{UseCase: setup.UseCaseRatingType},
-		UserRatingHandler:      handlers.UserRatingHandler{UseCase: setup.UseCaseUserRating},
+		UserRatingHandler:      handlers.UserRatingHandler{UseCase: setup.UseCaseUserRating, FcmTokenUseCase: setup.UseCaseFcmToken},
 	}
 }

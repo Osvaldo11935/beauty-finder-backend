@@ -41,14 +41,29 @@ func (uc *UserRatingUseCase) FindAllUserRating() ([]entities.UserRating, error) 
 
 	return data, nil
 }
+func (uc *UserRatingUseCase) FindUserRatingByUserId(userId uuid.UUID) ([]entities.UserRating, error) {
 
-func (uc *UserRatingUseCase) FindUserRatingById(UserRatingId uuid.UUID) (*entities.UserRating, error) {
+	var data []entities.UserRating
+
+	findErr := uc.Repo.Query().
+		Preload("UserEvaluator").
+		Preload("UserAvaluated").
+		Where("UserAvaluatedId", userId).
+		Find(&data).Error
+
+	if findErr != nil {
+		return nil, errors.UnknownFindUserRatingError(findErr.Error())
+	}
+
+	return data, nil
+}
+func (uc *UserRatingUseCase) FindUserRatingById(userRatingId uuid.UUID) (*entities.UserRating, error) {
 	var data entities.UserRating
 
 	findErr := uc.Repo.Query().
 		Preload("UserEvaluator").
 		Preload("UserAvaluated").
-		First(&data, "ID", UserRatingId).Error
+		First(&data, "ID", userRatingId).Error
 
 	if findErr != nil {
 		return nil, errors.UnknownFindUserRatingError(findErr.Error())
@@ -57,9 +72,9 @@ func (uc *UserRatingUseCase) FindUserRatingById(UserRatingId uuid.UUID) (*entiti
 	return &data, nil
 }
 
-func (uc *UserRatingUseCase) UpdateUserRating(UserRatingId uuid.UUID, request models_requests_puts.UpdateUserRatingRequest) error {
+func (uc *UserRatingUseCase) UpdateUserRating(userRatingId uuid.UUID, request models_requests_puts.UpdateUserRatingRequest) error {
 
-	UserRating, findErr := uc.FindUserRatingById(UserRatingId)
+	UserRating, findErr := uc.FindUserRatingById(userRatingId)
 
 	if findErr != nil {
 		return findErr
@@ -76,9 +91,9 @@ func (uc *UserRatingUseCase) UpdateUserRating(UserRatingId uuid.UUID, request mo
 	return nil
 }
 
-func (uc *UserRatingUseCase) DeleteUserRating(UserRatingId uuid.UUID) error {
+func (uc *UserRatingUseCase) DeleteUserRating(userRatingId uuid.UUID) error {
 
-	UserRating, findErr := uc.FindUserRatingById(UserRatingId)
+	UserRating, findErr := uc.FindUserRatingById(userRatingId)
 
 	if findErr != nil {
 		return findErr
