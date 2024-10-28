@@ -32,7 +32,7 @@ func RunMigration() {
 	)
 
 	if migrationErr != nil {
-		log.Panic("Erro ao executar migrations", migrationErr)
+		log.Printf("Erro ao executar migrations", migrationErr)
 		return
 	}
 

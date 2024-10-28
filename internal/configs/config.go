@@ -23,6 +23,7 @@ type Config struct {
 	QueryingPersonData    string
 	FileConfigFirebase    string
 	FileConfigGoogleDrive string
+	FileTokenGooGleDrive string
 }
 
 func LoadConfig() (*Config, error) {
@@ -37,6 +38,7 @@ func LoadConfig() (*Config, error) {
 		return nil, err
 	}
 	log.Println("Servidor iniciado na porta", os.Getenv("PORT"))
+	log.Println("String de conexão", os.Getenv("POSTGRES_CONNECTION_STRING"))
 	config := &Config{
 		DBHost:                os.Getenv("DB_HOST"),
 		DBPort:                port,
@@ -51,6 +53,7 @@ func LoadConfig() (*Config, error) {
 		BaseUrlGoogleStorage:  os.Getenv("BASE_URL_GOOGLE_STORAGE"),
 		FileConfigFirebase:    os.Getenv("FILE_CONFIG_FIREBASE"),
 		FileConfigGoogleDrive: os.Getenv("FILE_CONFIG_GOOGLE_DRIVE"),
+		FileTokenGooGleDrive: os.Getenv("FILE_TOKEN_GOOGLE_DRIVE"),
 	}
 
 	// config := &Config{

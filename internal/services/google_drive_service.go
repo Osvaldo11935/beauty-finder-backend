@@ -42,7 +42,7 @@ func NewGoogleDriveService() service_interface.IFileManager {
 		return nil
 	}
 
-	client := GetClient(config)
+	client := GetClient(config, envConfig)
 
 	srv, err := drive.NewService(context.Background(), option.WithHTTPClient(client))
 	if err != nil {
@@ -109,8 +109,8 @@ func (d *GoogleDriveService) Download(fileId string) (*string, error) {
 // 	return data, err
 // }
 
-func GetClient(config *oauth2.Config) *http.Client {
-	tokFile := "../token.json"
+func GetClient(config *oauth2.Config, envConfig *configs.Config) *http.Client {
+	tokFile := envConfig.FileTokenGooGleDrive
 	tok, err := tokenFromFile(tokFile)
 	if err != nil {
 		tok = getTokenFromWeb(config)
@@ -124,9 +124,9 @@ func getTokenFromWeb(config *oauth2.Config) *oauth2.Token {
 	fmt.Printf("Go to the following link in your browser then type the authorization code: \n%v\n", authURL)
 
 	var authCode string
-	if _, err := fmt.Scan(&authCode); err != nil {
-		log.Fatalf("Unable to read authorization code: %v", err)
-	}
+	// if _, err := fmt.Scan(&authCode); err != nil {
+	// 	log.Fatalf("Unable to read authorization code: %v", err)
+	// }
 
 	tok, err := config.Exchange(context.TODO(), authCode)
 	if err != nil {
