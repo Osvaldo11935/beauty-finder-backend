@@ -22,7 +22,7 @@ func Connect() (*gorm.DB, error) {
 	if configErr != nil {
 		return nil, configErr
 	}
-	db, openConnectionErr := gorm.Open(postgres.Open(config.PgConnectionString + "?statement_cache_mode=explicit&search_path=public"), &gorm.Config{})
+	db, openConnectionErr := gorm.Open(postgres.New(postgres.Config{DSN: config.PgConnectionString, PreferSimpleProtocol: true,},), &gorm.Config{})
 	if openConnectionErr != nil {
 		return nil, openConnectionErr
 	}
