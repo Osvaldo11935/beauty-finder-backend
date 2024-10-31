@@ -37,8 +37,6 @@ func LoadConfig() (*Config, error) {
 		log.Printf("Invalid DB_PORT: %v", err)
 		return nil, err
 	}
-	log.Println("Servidor iniciado na porta", os.Getenv("PORT"))
-	log.Println("String de conexão", os.Getenv("POSTGRES_CONNECTION_STRING"))
 	config := &Config{
 		DBHost:                os.Getenv("DB_HOST"),
 		DBPort:                port,
