@@ -2,7 +2,6 @@ package repositories_common
 
 import (
 	interfaces_repositories_common "src/internal/domain/interfaces_repositories/common"
-	"src/internal/persistence/database"
 	"gorm.io/gorm"
 )
 
@@ -10,8 +9,12 @@ type GormBaseRepository struct {
 	db  *gorm.DB
 }
 
-func NewGormBaseRepository() interfaces_repositories_common.IGormBaseRepository[gorm.DB]{
-	db, _ := database.Connect()
+func NewGormBaseRepository(db *gorm.DB) interfaces_repositories_common.IGormBaseRepository[gorm.DB]{
+  
+	if db ==  nil {
+	 return nil
+   }
+
    return &GormBaseRepository{db: db}
 }
 

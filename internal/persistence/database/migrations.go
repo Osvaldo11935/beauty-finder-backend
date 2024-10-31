@@ -3,13 +3,12 @@ package database
 import (
 	"log"
 	"src/internal/domain/entities"
+
+	"gorm.io/gorm"
 )
 
-func RunMigration() {
-	db, connectErr := Connect()
-
-	if connectErr != nil {
-		log.Panic("Erro ao conectar no banco de dados", connectErr)
+func RunMigration(db *gorm.DB) {
+	if db == nil {
 		return
 	}
 	migrationErr := db.AutoMigrate(

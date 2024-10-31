@@ -3,6 +3,8 @@ package setup
 import (
 	"src/internal/domain/interfaces_repositories"
 	"src/internal/persistence/repositories"
+
+	"gorm.io/gorm"
 )
 
 type RepositorySetup struct {
@@ -22,21 +24,21 @@ type RepositorySetup struct {
 	UserRatingRepository        interfaces_repositories.IUserRatingRepository
 }
 
-func NewRepositorySetup() *RepositorySetup {
+func NewRepositorySetup(db *gorm.DB) *RepositorySetup {
 	return &RepositorySetup{
-		AddressRepository:           repositories.NewAddressRepository(),
-		AppointmentRepository:       repositories.NewAppointmentRepository(),
-		AppointmentStatusRepository: repositories.NewAppointmentStatusRepository(),
-		AttachmentRepository:        repositories.NewAttachmentRepository(),
-		AttachmentTypeRepository:    repositories.NewAttachmentTypeRepository(),
-		ServiceCategoryRepository:   repositories.NewServiceCategoryRepository(),
-		MessageRepository:           repositories.NewMessageRepository(),
-		PersonRepository:            repositories.NewPersonRepository(),
-		RoleRepository:              repositories.NewRoleRepository(),
-		ServiceRepository:           repositories.NewServiceRepository(),
-		ServicePriceRepository:      repositories.NewServicePriceRepository(),
-		UserRepository:              repositories.NewUserRepository(),
-		RatingTypeRepository: repositories.NewRatingTypeRepository(),
-		UserRatingRepository: repositories.NewUserRatingRepository(),
+		AddressRepository:           repositories.NewAddressRepository(db),
+		AppointmentRepository:       repositories.NewAppointmentRepository(db),
+		AppointmentStatusRepository: repositories.NewAppointmentStatusRepository(db),
+		AttachmentRepository:        repositories.NewAttachmentRepository(db),
+		AttachmentTypeRepository:    repositories.NewAttachmentTypeRepository(db),
+		ServiceCategoryRepository:   repositories.NewServiceCategoryRepository(db),
+		MessageRepository:           repositories.NewMessageRepository(db),
+		PersonRepository:            repositories.NewPersonRepository(db),
+		RoleRepository:              repositories.NewRoleRepository(db),
+		ServiceRepository:           repositories.NewServiceRepository(db),
+		ServicePriceRepository:      repositories.NewServicePriceRepository(db),
+		UserRepository:              repositories.NewUserRepository(db),
+		RatingTypeRepository: repositories.NewRatingTypeRepository(db),
+		UserRatingRepository: repositories.NewUserRatingRepository(db),
 	}
 }

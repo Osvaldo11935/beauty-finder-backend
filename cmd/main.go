@@ -18,16 +18,16 @@ func main() {
 		return
 	}
 
-	_, connectErr := database.Connect()
+	db, connectErr := database.Connect()
 	if connectErr != nil {
 		fmt.Println("Erro ao conectar no banco de dados:", connectErr)
 		return
 	}
 
-	database.RunMigration()
-	database.Seed()
+	database.RunMigration(db)
+	database.Seed(db)
 	otherSetup := setup.NewOtherSetup()
-	repositorySetup := setup.NewRepositorySetup()
+	repositorySetup := setup.NewRepositorySetup(db)
 	useCaseSetup := setup.NewUseCaseSetup(repositorySetup)
 	handlerSetup := setup.NewHandlerSetup(useCaseSetup, otherSetup)
 

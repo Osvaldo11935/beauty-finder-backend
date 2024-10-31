@@ -9,9 +9,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func Seed() {
-	db, connectionErr := Connect()
-	if connectionErr != nil {
+func Seed(db *gorm.DB) {
+	if db == nil {
 		return
 	}
 	SeedRole(db)

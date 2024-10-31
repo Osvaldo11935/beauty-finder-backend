@@ -1,15 +1,24 @@
 package validators
 
 import (
+	"fmt"
 	models_requests_posts "src/internal/delivery/http/models/requests/posts"
 	"src/internal/domain/errors"
+	"src/internal/persistence/database"
 	"src/internal/persistence/repositories"
 	"src/internal/usecase"
 )
 
 func ValidateCreateUser(user *models_requests_posts.CreateUserRequest) error {
+	db, connectErr := database.Connect()
+
+	if connectErr != nil {
+		fmt.Println("Erro ao conectar no banco de dados no metodo de validação dos dados do usuario:", connectErr)
+		return nil
+	}
+
 	userUseCase := usecase.UserUseCase{
-		Repo: repositories.NewAddressRepository(),
+		Repo: repositories.NewAddressRepository(db),
 	}
 
 	var validationErrors []string
