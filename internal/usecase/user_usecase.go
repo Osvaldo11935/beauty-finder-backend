@@ -239,6 +239,7 @@ func (uc *UserUseCase) FindUsersNearBy(serviceId uuid.UUID, latitude float64, lo
 		Preload("Provider.Role").
 		Preload("Provider.Person").
 		Preload("Provider.FcmToken").
+		Where("ServiceId", serviceId).
 		Find(&serviceProviders).Error; err != nil {
 		return nil, err
 	}
