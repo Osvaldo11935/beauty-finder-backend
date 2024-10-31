@@ -7,14 +7,22 @@ import (
 	"src/internal/configs"
 )
 
+var dbInstance *gorm.DB
+
 func Connect() (*gorm.DB, error) {
+	if dbInstance != nil {
+		sqlDB, err := dbInstance.DB()
+		if err == nil && sqlDB.Ping() == nil {
+			return dbInstance, nil
+		}
+	}
+
 
 	config, configErr := configs.LoadConfig()
 	if configErr != nil {
 		return nil, configErr
 	}
-
-	db, openConnectionErr := gorm.Open(postgres.Open(config.PgConnectionString + "?statement_cache_mode=disabled"), &gorm.Config{})
+	db, openConnectionErr := gorm.Open(postgres.Open(config.PgConnectionString + "?statement_cache_mode=explicit"), &gorm.Config{})
 	if openConnectionErr != nil {
 		return nil, openConnectionErr
 	}
@@ -26,7 +34,8 @@ func Connect() (*gorm.DB, error) {
 
 	sqlDB.SetMaxIdleConns(10)
 	sqlDB.SetMaxOpenConns(50)
-	sqlDB.SetConnMaxLifetime(30 * time.Minute) 
+	sqlDB.SetConnMaxLifetime(10 * time.Minute)
 
-	return db, nil
+	dbInstance = db
+	return dbInstance, nil
 }
