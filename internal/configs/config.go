@@ -54,6 +54,7 @@ func LoadConfig() (*Config, error) {
 		FileConfigFirebase:    os.Getenv("FILE_CONFIG_FIREBASE"),
 		FileConfigGoogleDrive: os.Getenv("FILE_CONFIG_GOOGLE_DRIVE"),
 		FileTokenGooGleDrive: os.Getenv("FILE_TOKEN_GOOGLE_DRIVE"),
+		QueryingPersonData: os.Getenv("QUERYING_PERSONDATA"),
 	}
 
 	// config := &Config{
