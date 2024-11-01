@@ -9,21 +9,27 @@ import (
 )
 
 type Config struct {
-	DBHost                string
-	DBPort                int
-	DBUser                string
-	DBName                string
-	DBPassword            string
-	ServerPort            string
-	JwtSecretKey          string
-	PgConnectionString    string
-	FileKeys              string
-	Bucket                string
-	BaseUrlGoogleStorage  string
-	QueryingPersonData    string
-	FileConfigFirebase    string
-	FileConfigGoogleDrive string
-	FileTokenGooGleDrive string
+	DBHost                             string
+	DBPort                             int
+	DBUser                             string
+	DBName                             string
+	DBPassword                         string
+	ServerPort                         string
+	JwtSecretKey                       string
+	PgConnectionString                 string
+	FileKeys                           string
+	Bucket                             string
+	BaseUrlGoogleStorage               string
+	QueryingPersonData                 string
+	FileConfigFirebase                 string
+	FileConfigGoogleDrive              string
+	FileTokenGooGleDrive               string
+	SupaBaseUrl                        string
+	SupaBaseBucket                     string
+	SupaBaseFolderKeyName              string
+	SupaBaseFileConfigFireBase         string
+	SupaBaseFileConfigGoogleDriver     string
+	SupaBaseFileConfigTokenGoogleDrive string
 }
 
 func LoadConfig() (*Config, error) {
@@ -38,21 +44,27 @@ func LoadConfig() (*Config, error) {
 		return nil, err
 	}
 	config := &Config{
-		DBHost:                os.Getenv("DB_HOST"),
-		DBPort:                port,
-		DBUser:                os.Getenv("DB_USER"),
-		DBPassword:            os.Getenv("DB_PASSWORD"),
-		DBName:                os.Getenv("DB_NAME"),
-		ServerPort:            os.Getenv("PORT"),
-		JwtSecretKey:          os.Getenv("JWT_SECRET_KEY"),
-		PgConnectionString:    os.Getenv("POSTGRES_CONNECTION_STRING"),
-		FileKeys:              os.Getenv("FILE_CONFIG_GOOGLE_STORAGE"),
-		Bucket:                os.Getenv("BUCKET_NAME"),
-		BaseUrlGoogleStorage:  os.Getenv("BASE_URL_GOOGLE_STORAGE"),
-		FileConfigFirebase:    os.Getenv("FILE_CONFIG_FIREBASE"),
-		FileConfigGoogleDrive: os.Getenv("FILE_CONFIG_GOOGLE_DRIVE"),
-		FileTokenGooGleDrive: os.Getenv("FILE_TOKEN_GOOGLE_DRIVE"),
-		QueryingPersonData: os.Getenv("QUERYING_PERSONDATA"),
+		DBHost:                             os.Getenv("DB_HOST"),
+		DBPort:                             port,
+		DBUser:                             os.Getenv("DB_USER"),
+		DBPassword:                         os.Getenv("DB_PASSWORD"),
+		DBName:                             os.Getenv("DB_NAME"),
+		ServerPort:                         os.Getenv("PORT"),
+		JwtSecretKey:                       os.Getenv("JWT_SECRET_KEY"),
+		PgConnectionString:                 os.Getenv("POSTGRES_CONNECTION_STRING"),
+		FileKeys:                           os.Getenv("FILE_CONFIG_GOOGLE_STORAGE"),
+		Bucket:                             os.Getenv("BUCKET_NAME"),
+		BaseUrlGoogleStorage:               os.Getenv("BASE_URL_GOOGLE_STORAGE"),
+		FileConfigFirebase:                 os.Getenv("FILE_CONFIG_FIREBASE"),
+		FileConfigGoogleDrive:              os.Getenv("FILE_CONFIG_GOOGLE_DRIVE"),
+		FileTokenGooGleDrive:               os.Getenv("FILE_TOKEN_GOOGLE_DRIVE"),
+		QueryingPersonData:                 os.Getenv("QUERYING_PERSONDATA"),
+		SupaBaseUrl:                        os.Getenv("SUPA_BASE_URL"),
+		SupaBaseBucket:                     os.Getenv("SUPA_BASE_BUCKET_NAME"),
+		SupaBaseFolderKeyName:              os.Getenv("SUPA_BASE_FOLDER_KEY_NAME"),
+		SupaBaseFileConfigFireBase:         os.Getenv("SUPA_BASE_FILE_CONFIG_FIREBASE"),
+		SupaBaseFileConfigGoogleDriver:     os.Getenv("SUPA_BASE_FILE_CONFIG_GOOGLE_DRIVE"),
+		SupaBaseFileConfigTokenGoogleDrive: os.Getenv("SUPA_BASE_FILE_TOKEN_GOOGLE_DRIVE"),
 	}
 
 	// config := &Config{

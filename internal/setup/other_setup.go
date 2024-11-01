@@ -11,6 +11,6 @@ type OtherSetup struct {
 
 func NewOtherSetup() *OtherSetup {
 	return &OtherSetup{
-		FileManager: services.NewGoogleDriveService(),
+		FileManager: services.NewSupabaseStorageService(),
 	}
 }

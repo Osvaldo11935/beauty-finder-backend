@@ -2,10 +2,8 @@ package services
 
 import (
 	"context"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 	"os"
@@ -53,7 +51,7 @@ func NewGoogleDriveService() service_interface.IFileManager {
 	return &GoogleDriveService{srv: srv}
 }
 
-func (d *GoogleDriveService) Upload(c *gin.Context) (*string, error) {
+func (d *GoogleDriveService) Upload(c *gin.Context, filePath *string) (*string, error) {
 	file, err := c.FormFile("file")
 	if err != nil {
 		return nil, err
@@ -81,22 +79,22 @@ func (d *GoogleDriveService) Upload(c *gin.Context) (*string, error) {
 	return &uploadedFile.Id, nil
 }
 
-func (d *GoogleDriveService) Download(fileId string) (*string, error) {
-	resp, err := d.srv.Files.Get(fileId).Download()
-	if err != nil {
-		return nil, fmt.Errorf("failed to download file: %v", err)
-	}
-	defer resp.Body.Close()
-	data, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read file data: %v", err)
-	}
-	encodedData := base64.StdEncoding.EncodeToString(data)
-	contentType := resp.Header.Get("Content-Type")
-	dataURI := fmt.Sprintf("data:%s;base64,%s", contentType, encodedData)
+// func (d *GoogleDriveService) Download(fileId string) (*string, error) {
+// 	resp, err := d.srv.Files.Get(fileId).Download()
+// 	if err != nil {
+// 		return nil, fmt.Errorf("failed to download file: %v", err)
+// 	}
+// 	defer resp.Body.Close()
+// 	data, err := io.ReadAll(resp.Body)
+// 	if err != nil {
+// 		return nil, fmt.Errorf("failed to read file data: %v", err)
+// 	}
+// 	encodedData := base64.StdEncoding.EncodeToString(data)
+// 	contentType := resp.Header.Get("Content-Type")
+// 	dataURI := fmt.Sprintf("data:%s;base64,%s", contentType, encodedData)
 
-	return &dataURI, nil
-}
+// 	return &dataURI, nil
+// }
 
 // func (d *GoogleDriveService) Download(fileId string) ([]byte, error) {
 // 	resp, err := d.srv.Files.Get(fileId).Download()
@@ -108,6 +106,12 @@ func (d *GoogleDriveService) Download(fileId string) (*string, error) {
 // 	data, err := io.ReadAll(resp.Body)
 // 	return data, err
 // }
+func (s *GoogleDriveService) GetFileUrl(filePath string) (*string, error) {
+	return nil, nil
+}
+func (s *GoogleDriveService) Download(filePath string) ([]byte, error) {
+	return nil, nil
+}
 
 func GetClient(config *oauth2.Config, envConfig *configs.Config) *http.Client {
 	tokFile := envConfig.FileTokenGooGleDrive

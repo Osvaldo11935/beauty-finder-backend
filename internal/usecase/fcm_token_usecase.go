@@ -5,6 +5,7 @@ import (
 	"log"
 	"src/internal/configs"
 	models_requests_posts "src/internal/delivery/http/models/requests/posts"
+	service_interface "src/internal/services/interface_services"
 
 	"firebase.google.com/go/v4/messaging"
 	fcm "github.com/appleboy/go-fcm"
@@ -12,15 +13,26 @@ import (
 )
 
 type FcmTokenUseCase struct {
-	UserUseCase UserUseCase
+	UserUseCase        UserUseCase
+	FileManagerService service_interface.IFileManager
 }
 
 func (s *FcmTokenUseCase) DispatchAssessmentNotification(ctx context.Context, userEvaluatorId uuid.UUID,
 	request models_requests_posts.DispatchAssessmentNotification) {
-	config, loadConfigErr := configs.LoadConfig()
+	loadEnv, loadConfigErr := configs.LoadConfig()
 
 	if loadConfigErr != nil {
 		return
+	}
+	
+	file, getFileErr := s.FileManagerService.Download(loadEnv.SupaBaseFileConfigFireBase)
+	if getFileErr != nil {
+		log.Fatal("Falha ao carregar arquivo de configuração do Firebase:", getFileErr)
+	}
+
+	client, clientErr := fcm.NewClient(ctx, fcm.WithCredentialsJSON(file))
+	if clientErr != nil {
+		log.Fatal("Erro ao criar cliente FCM:", clientErr)
 	}
 
 	userEvaluator, findUserEvaluatorErr := s.UserUseCase.FindUserById(userEvaluatorId)
@@ -40,11 +52,6 @@ func (s *FcmTokenUseCase) DispatchAssessmentNotification(ctx context.Context, us
 	}
 
 	for _, fcmToken := range userEvaluator.FcmToken {
-		client, clientErr := fcm.NewClient(ctx,
-			fcm.WithCredentialsFile(config.FileConfigFirebase))
-		if clientErr != nil {
-			log.Fatal(clientErr)
-		}
 
 		token := fcmToken.TokenFcm
 		resp, err := client.Send(
@@ -68,32 +75,40 @@ func (s *FcmTokenUseCase) DispatchAssessmentNotification(ctx context.Context, us
 		if err != nil {
 			log.Fatal(err)
 		}
-		print(&resp)
+		if resp.FailureCount > 0 {
+			log.Printf("Erro na resposta do FCM: %s, para o token: %s", resp.Responses, token)
+		} else {
+			log.Printf("Notificação enviada com sucesso para o token: %s, ID da mensagem: %s", token)
+		}
 
 	}
 }
 
 func (s *FcmTokenUseCase) DispatchServiceNotification(ctx context.Context, serviceId uuid.UUID, appointmentId uuid.UUID,
 	request models_requests_posts.DispatchServiceNotification) {
-	config, loadConfigErr := configs.LoadConfig()
+	loadEnv, loadConfigErr := configs.LoadConfig()
 
 	if loadConfigErr != nil {
 		return
 	}
-	users, findServiceErr := s.UserUseCase.FindUsersNearBy(serviceId, request.Latitude, request.Longitude, request.RadiusKm)
+	file, getFileErr := s.FileManagerService.Download(loadEnv.SupaBaseFileConfigFireBase)
+	if getFileErr != nil {
+		log.Fatal("Falha ao carregar arquivo de configuração do Firebase:", getFileErr)
+	}
 
+	users, findServiceErr := s.UserUseCase.FindUsersNearBy(serviceId, request.Latitude, request.Longitude, request.RadiusKm)
 	if findServiceErr != nil {
+		log.Println("Erro ao encontrar serviços:", findServiceErr)
 		return
+	}
+
+	client, clientErr := fcm.NewClient(ctx, fcm.WithCredentialsJSON(file))
+	if clientErr != nil {
+		log.Fatal("Erro ao criar cliente FCM:", clientErr)
 	}
 
 	for _, user := range users {
 		for _, fcmToken := range user.User.FcmToken {
-			client, clientErr := fcm.NewClient(ctx,
-				fcm.WithCredentialsFile(config.FileConfigFirebase))
-			if clientErr != nil {
-				log.Fatal(clientErr)
-			}
-
 			token := fcmToken.TokenFcm
 			resp, err := client.Send(
 				ctx,
@@ -112,10 +127,17 @@ func (s *FcmTokenUseCase) DispatchServiceNotification(ctx context.Context, servi
 					},
 				},
 			)
+
 			if err != nil {
-				log.Fatal(err)
+				log.Println("Erro ao enviar notificação:", err)
+				continue
 			}
-			print(resp)
+
+			if resp.FailureCount > 0 {
+				log.Printf("Erro na resposta do FCM: %s, para o token: %s", resp.Responses, token)
+			} else {
+				log.Printf("Notificação enviada com sucesso para o token: %s, ID da mensagem: %s", token)
+			}
 		}
 	}
 }

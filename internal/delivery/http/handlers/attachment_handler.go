@@ -7,7 +7,6 @@ import (
 	models_responses "src/internal/delivery/http/models/responses"
 	service_interface "src/internal/services/interface_services"
 	"src/internal/usecase"
-
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -18,12 +17,12 @@ type AttachmentHandler struct {
 }
 
 func (handler *AttachmentHandler) CreateAttachmentUser(ctx *gin.Context) {
-
+    filepath := "Doc-User"
 	userId := uuid.MustParse(ctx.Param("userId"))
 
 	attachmentTypeId := uuid.MustParse(ctx.Param("attachmentTypeId"))
 
-	url, uploadFileErr := handler.FileManagerService.Upload(ctx)
+	url, uploadFileErr := handler.FileManagerService.Upload(ctx, &filepath)
 
 	if uploadFileErr != nil {
 		ctx.JSON(http.StatusBadRequest, uploadFileErr)
@@ -46,12 +45,13 @@ func (handler *AttachmentHandler) CreateAttachmentUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, models_responses.NewCreateResponse(*id))
 }
 func (handler *AttachmentHandler) CreateAttachmentService(ctx *gin.Context) {
+    filepath := "Img-Service"
 
 	serviceId := uuid.MustParse(ctx.Param("serviceId"))
 
 	attachmentTypeId := uuid.MustParse(ctx.Param("attachmentTypeId"))
 
-	url, uploadFileErr := handler.FileManagerService.Upload(ctx)
+	url, uploadFileErr := handler.FileManagerService.Upload(ctx, &filepath)
 
 	if uploadFileErr != nil {
 		ctx.JSON(http.StatusBadRequest, uploadFileErr)
@@ -74,12 +74,13 @@ func (handler *AttachmentHandler) CreateAttachmentService(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, models_responses.NewCreateResponse(*id))
 }
 func (handler *AttachmentHandler) CreateAttachmentCategory(ctx *gin.Context) {
-
+    filepath := "Img-Category"
+	
 	categoryId := uuid.MustParse(ctx.Param("categoryId"))
 
 	attachmentTypeId := uuid.MustParse(ctx.Param("attachmentTypeId"))
 
-	url, uploadFileErr := handler.FileManagerService.Upload(ctx)
+	url, uploadFileErr := handler.FileManagerService.Upload(ctx, &filepath)
 
 	if uploadFileErr != nil {
 		ctx.JSON(http.StatusBadRequest, uploadFileErr)
@@ -102,7 +103,7 @@ func (handler *AttachmentHandler) CreateAttachmentCategory(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, models_responses.NewCreateResponse(*id))
 }
 func (handler *AttachmentHandler) FindAttachmentByUserId(ctx *gin.Context) {
-
+	
 	userId := uuid.MustParse(ctx.Param("userId"))
 
 	data, findErr := handler.UseCase.FindAttachmentByUserId(userId)
