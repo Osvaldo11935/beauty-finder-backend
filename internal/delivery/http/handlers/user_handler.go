@@ -17,6 +17,7 @@ import (
 
 type UserHandler struct {
 	UseCase usecase.UserUseCase
+	FcmTokenUseCase usecase.FcmTokenUseCase
 }
 
 func (handler *UserHandler) CreateAdmin(ctx *gin.Context) {
@@ -275,6 +276,21 @@ func (handler *UserHandler) Remove(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, deleteErr)
 		return
 	}
+
+	ctx.JSON(http.StatusNoContent, nil)
+}
+func (handler *UserHandler) DispatchStartConversationNotification(ctx *gin.Context) {
+	
+	userRequiredId := uuid.MustParse(ctx.Param("userRequiredId"))
+	userApplicantId := uuid.MustParse(ctx.Param("userApplicantId"))
+	
+
+	handler.FcmTokenUseCase.DispatchStartConversationNotification(ctx, userApplicantId, userRequiredId)
+
+	// if createErr != nil {
+	//    ctx.JSON(http.StatusBadRequest, createErr)
+	//    return
+	// }
 
 	ctx.JSON(http.StatusNoContent, nil)
 }

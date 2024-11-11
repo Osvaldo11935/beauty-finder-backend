@@ -11,7 +11,6 @@ func NewUserRatingRouteGroup(route *gin.RouterGroup, handler setup.HandlerSetup)
 	r := route.Group("/user-rating")
 
 	r.POST("", middlewares.Auth(), handler.UserRatingHandler.Create)
-	r.POST("userEvaluator/:userEvaluatorId/dispatch-assessment-notification", middlewares.Auth(), handler.UserRatingHandler.DispatchAssessmentNotification)
 
 	r.GET("", middlewares.Auth(), handler.UserRatingHandler.FindAllUserRating)
 	r.GET(":userRatingId", middlewares.Auth(), handler.UserRatingHandler.FindUserRatingById)

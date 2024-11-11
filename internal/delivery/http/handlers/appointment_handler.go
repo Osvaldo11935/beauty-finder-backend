@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	models_requests_patchs "src/internal/delivery/http/models/requests/patch"
 	models_requests_posts "src/internal/delivery/http/models/requests/posts"
 	models_requests_puts "src/internal/delivery/http/models/requests/put"
 	models_responses "src/internal/delivery/http/models/responses"
@@ -35,24 +36,7 @@ func (handler *AppointmentHandler) Create(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, models_responses.NewCreateResponse(*id))
 }
-func (handler *AppointmentHandler) DispatchServiceNotification(ctx *gin.Context) {
 
-	var request models_requests_posts.DispatchServiceNotification
-
-	serviceId := uuid.MustParse(ctx.Param("serviceId"))
-	appointmentId := uuid.MustParse(ctx.Param("appointmentId"))
-
-	paramErr := ctx.ShouldBindJSON(&request)
-
-	if paramErr != nil {
-		ctx.JSON(http.StatusBadRequest, paramErr)
-		return
-	}
-
-	handler.FcmTokenUseCase.DispatchServiceNotification(ctx, serviceId, appointmentId, request)
-
-	ctx.JSON(http.StatusNoContent, nil)
-}
 func (handler *AppointmentHandler) FindAppointmentByClientId(ctx *gin.Context) {
 
 	clientId := uuid.MustParse(ctx.Param("clientId"))
@@ -132,6 +116,7 @@ func (handler *AppointmentHandler) Update(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusNoContent, nil)
 }
+
 func (handler *AppointmentHandler) SetProviderAppointment(ctx *gin.Context) {
 
 	var request models_requests_puts.UpdateAppointmentRequest
@@ -159,6 +144,32 @@ func (handler *AppointmentHandler) SetProviderAppointment(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusNoContent, nil)
 }
+
+func (handler *AppointmentHandler) UpdateStatusTypeAppointment(ctx *gin.Context) {
+    
+	var request models_requests_patchs.UpdateStatusTypeAppointmentRequest
+
+	statusTypeId := uuid.MustParse(ctx.Param("statusTypeId"))
+
+	appointmentId := uuid.MustParse(ctx.Param("appointmentId"))
+
+	serializerErr := ctx.ShouldBindJSON(&request)
+
+    if serializerErr != nil{
+		ctx.JSON(http.StatusBadRequest, serializerErr.Error())
+		return
+	}
+
+	updateErr := handler.UseCase.UpdateStatusTypeAppointment(appointmentId, statusTypeId)
+
+	if updateErr != nil {
+		ctx.JSON(http.StatusBadRequest, updateErr)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, nil)
+}
+
 func (handler *AppointmentHandler) Remove(ctx *gin.Context) {
 
 	appointmentId, paramErr := uuid.Parse(ctx.Param("appointmentId"))

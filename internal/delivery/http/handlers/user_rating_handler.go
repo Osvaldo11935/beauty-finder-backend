@@ -36,29 +36,6 @@ func (handler *UserRatingHandler) Create(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, models_responses.NewCreateResponse(*id))
 }
 
-func (handler *UserRatingHandler) DispatchAssessmentNotification(ctx *gin.Context) {
-	
-	var request models_requests_posts.DispatchAssessmentNotification
-
-	deserializerErr := ctx.ShouldBindJSON(&request)
-
-	if deserializerErr != nil {
-		ctx.JSON(http.StatusBadRequest, deserializerErr)
-		return
-	}
-
-	userEvaluatorId := uuid.MustParse(ctx.Param("userEvaluatorId"))
-
-	handler.FcmTokenUseCase.DispatchAssessmentNotification(ctx, userEvaluatorId, request)
-
-	// if createErr != nil {
-	//    ctx.JSON(http.StatusBadRequest, createErr)
-	//    return
-	// }
-
-	ctx.JSON(http.StatusNoContent, nil)
-}
-
 func (handler *UserRatingHandler) FindAllUserRating(ctx *gin.Context) {
 
 	data, findErr := handler.UseCase.FindAllUserRating()

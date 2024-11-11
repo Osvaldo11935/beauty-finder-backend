@@ -11,7 +11,6 @@ func NewAppointmentRouteGroup(route *gin.RouterGroup, handler setup.HandlerSetup
 	r := route.Group("/appointment")
 
 	r.POST("", middlewares.Auth(), handler.AppointmentHandler.Create)
-	r.POST(":appointmentId/service/:serviceId/dispatch-notification", middlewares.Auth(), handler.AppointmentHandler.DispatchServiceNotification)
 
 	r.GET(":appointmentId", middlewares.Auth(), handler.AppointmentHandler.FindAppointmentById)
 	r.GET("client/:clientId", middlewares.Auth(), handler.AppointmentHandler.FindAppointmentByClientId)
@@ -20,6 +19,7 @@ func NewAppointmentRouteGroup(route *gin.RouterGroup, handler setup.HandlerSetup
 	r.PUT(":appointmentId", middlewares.Auth(), handler.AppointmentHandler.Update)
 	
 	r.PATCH(":appointmentId/provider", middlewares.Auth(), handler.AppointmentHandler.SetProviderAppointment)
+	r.PATCH(":appointmentId/status-type/:statusTypeId", middlewares.Auth(), handler.AppointmentHandler.UpdateStatusTypeAppointment)
 
 	r.DELETE(":appointmentId", middlewares.Auth(), handler.AppointmentHandler.Remove)
 }

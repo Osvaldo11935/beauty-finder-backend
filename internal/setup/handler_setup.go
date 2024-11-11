@@ -5,20 +5,21 @@ import (
 )
 
 type HandlerSetup struct {
-	AddressHandler           handlers.AddressHandler
-	AppointmentHandler       handlers.AppointmentHandler
-	AppointmentStatusHandler handlers.AppointmentStatusHandler
-	AttachmentHandler        handlers.AttachmentHandler
-	AttachmentTypeHandler    handlers.AttachmentTypeHandler
-	ServiceCategoryHandler   handlers.ServiceCategoryHandler
-	MessageHandler           handlers.MessageHandler
-	PersonHandler            handlers.PersonHandler
-	RoleHandler              handlers.RoleHandler
-	ServiceHandler           handlers.ServiceHandler
-	ServicePriceHandler      handlers.ServicePriceHandler
-	UserHandler              handlers.UserHandler
-	RatingTypeHandler        handlers.RatingTypeHandler
-	UserRatingHandler        handlers.UserRatingHandler
+	AddressHandler              handlers.AddressHandler
+	AppointmentHandler          handlers.AppointmentHandler
+	AppointmentStatusHandler    handlers.AppointmentStatusHandler
+	AttachmentHandler           handlers.AttachmentHandler
+	AttachmentTypeHandler       handlers.AttachmentTypeHandler
+	ServiceCategoryHandler      handlers.ServiceCategoryHandler
+	MessageHandler              handlers.MessageHandler
+	PersonHandler               handlers.PersonHandler
+	RoleHandler                 handlers.RoleHandler
+	ServiceHandler              handlers.ServiceHandler
+	ServicePriceHandler         handlers.ServicePriceHandler
+	UserHandler                 handlers.UserHandler
+	RatingTypeHandler           handlers.RatingTypeHandler
+	UserRatingHandler           handlers.UserRatingHandler
+	DispatchNotificationHandler handlers.DispatchNotificationHandler
 }
 
 func NewHandlerSetup(setup *UseCaseSetup, otherSetup *OtherSetup) *HandlerSetup {
@@ -41,5 +42,6 @@ func NewHandlerSetup(setup *UseCaseSetup, otherSetup *OtherSetup) *HandlerSetup 
 		UserHandler:            handlers.UserHandler{UseCase: setup.UseCaseUser},
 		RatingTypeHandler:      handlers.RatingTypeHandler{UseCase: setup.UseCaseRatingType},
 		UserRatingHandler:      handlers.UserRatingHandler{UseCase: setup.UseCaseUserRating, FcmTokenUseCase: setup.UseCaseFcmToken},
+		DispatchNotificationHandler: handlers.DispatchNotificationHandler{FcmTokenUseCase: setup.UseCaseFcmToken},
 	}
 }

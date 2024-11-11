@@ -43,10 +43,25 @@ func NewAppointment(providerIdId *uuid.UUID, clientId uuid.UUID, serviceId uuid.
 
 func (s *Appointment) Update(serviceId uuid.UUID) {
 	s.ServiceId = serviceId
+	s.Address = nil
+	s.Client = nil
+	s.Provider = nil
+	s.Service = nil
+	s.Status = nil
 }
 func (s *Appointment) SetProvider(providerId uuid.UUID) {
 	s.ProviderId = &providerId
+	s.Address = nil
+	s.Client = nil
+	s.Provider = nil
+	s.Service = nil
+	s.Status = nil
 }
 func (s *Appointment) UpdateStatus(statusId uuid.UUID) {
 	s.StatusId = statusId
+	s.Address = nil
+	s.Client = nil
+	s.Provider = nil
+	s.Service = nil
+	s.Status = nil
 }

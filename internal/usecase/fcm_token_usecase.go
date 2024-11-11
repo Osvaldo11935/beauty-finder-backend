@@ -24,7 +24,7 @@ func (s *FcmTokenUseCase) DispatchAssessmentNotification(ctx context.Context, us
 	if loadConfigErr != nil {
 		return
 	}
-	
+
 	file, getFileErr := s.FileManagerService.Download(loadEnv.SupaBaseFileConfigFireBase)
 	if getFileErr != nil {
 		log.Fatal("Falha ao carregar arquivo de configuração do Firebase:", getFileErr)
@@ -139,5 +139,68 @@ func (s *FcmTokenUseCase) DispatchServiceNotification(ctx context.Context, servi
 				log.Printf("Notificação enviada com sucesso para o token: %s, ID da mensagem: %s", token)
 			}
 		}
+	}
+}	
+
+func (s *FcmTokenUseCase) DispatchStartConversationNotification(ctx context.Context, userApplicantId uuid.UUID, userRequiredId uuid.UUID) {
+		loadEnv, loadConfigErr := configs.LoadConfig()
+
+	if loadConfigErr != nil {
+		return
+	}
+
+	file, getFileErr := s.FileManagerService.Download(loadEnv.SupaBaseFileConfigFireBase)
+	if getFileErr != nil {
+		log.Fatal("Falha ao carregar arquivo de configuração do Firebase:", getFileErr)
+	}
+
+	client, clientErr := fcm.NewClient(ctx, fcm.WithCredentialsJSON(file))
+	if clientErr != nil {
+		log.Fatal("Erro ao criar cliente FCM:", clientErr)
+	}
+
+	userApplicant, findUserApplicantErr := s.UserUseCase.FindUserById(userApplicantId)
+
+	if findUserApplicantErr != nil {
+		return
+	}
+
+
+	userRequired, findUserRequiredErr := s.UserUseCase.FindUserById(userRequiredId)
+
+	if findUserRequiredErr != nil {
+		return
+	}
+
+	for _, fcmToken := range userRequired.FcmToken {
+
+		token := fcmToken.TokenFcm
+		resp, err := client.Send(
+			ctx,
+			&messaging.Message{
+				Token: token,
+				Notification: &messaging.Notification{
+					Title: "Iniciar conversa",
+					Body:  "Iniciar uma conversa interativa",
+				},
+				Data: map[string]string{
+					"user_applicant_id": userApplicant.ID.String(),
+					"user_required_id": userRequired.ID.String(),
+					"action_type":       "confirm_service",
+				},
+				Android: &messaging.AndroidConfig{
+					Priority: "high",
+				},
+			},
+		)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if resp.FailureCount > 0 {
+			log.Printf("Erro na resposta do FCM: %s, para o token: %s", resp.Responses, token)
+		} else {
+			log.Printf("Notificação enviada com sucesso para o token: %s, ID da mensagem: %s", token)
+		}
+
 	}
 }

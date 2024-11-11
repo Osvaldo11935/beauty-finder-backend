@@ -104,7 +104,7 @@ func (uc *AppointmentUseCase) UpdateAppointment(Id uuid.UUID, request models_req
 
 	return nil
 }
-func (uc *AppointmentUseCase) UpdateStatusTypeAppointment(Id uuid.UUID, request models_requests_puts.UpdateAppointmentRequest) error {
+func (uc *AppointmentUseCase) UpdateStatusTypeAppointment(Id uuid.UUID, request uuid.UUID) error {
 
 	appointment, findErr := uc.FindAppointmentById(Id)
 
@@ -112,7 +112,7 @@ func (uc *AppointmentUseCase) UpdateStatusTypeAppointment(Id uuid.UUID, request 
 		return findErr
 	}
 
-	appointment.Update(*request.ServiceId)
+	appointment.UpdateStatus(request)
 
 	updateErr := uc.Repo.Update(&appointment)
 
