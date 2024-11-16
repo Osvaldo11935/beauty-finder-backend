@@ -6,6 +6,7 @@ import (
 	"src/internal/domain/object_values"
 	"src/internal/domain/primitives"
 	"time"
+
 	"gorm.io/gorm"
 )
 
@@ -16,6 +17,7 @@ func Seed(db *gorm.DB) {
 	SeedRole(db)
 	SeedRatingType(db)
 	SeedStatusType(db)
+	SeedAttachmentType(db)
 }
 
 func SeedRole(db *gorm.DB) {
@@ -132,7 +134,7 @@ func SeedStatusType(db *gorm.DB) {
 				UpdatedAt: time.Now(),
 			},
 			Type: object_values.STATUS_COMPLETED_NAME,
-		},{
+		}, {
 			BaseAuditableEntity: primitives.BaseAuditableEntity{
 				BaseEntity: primitives.BaseEntity{
 					ID: object_values.STATUS_PENDING_ID,
@@ -149,6 +151,41 @@ func SeedStatusType(db *gorm.DB) {
 		err := db.FirstOrCreate(&statusType).Error
 		if err != nil {
 			log.Printf("Failed to seed status type %s: %v", statusType.Type, err)
+		}
+	}
+}
+
+func SeedAttachmentType(db *gorm.DB) {
+
+	attachmentTypes := []entities.AttachmentType{
+		{
+			BaseAuditableEntity: primitives.BaseAuditableEntity{
+				BaseEntity: primitives.BaseEntity{
+					ID: object_values.ATTACHMENT_TYPE_OTHER_ID,
+				},
+				IsActive:  true,
+				CreatedAt: time.Now(),
+				UpdatedAt: time.Now(),
+			},
+			Type: object_values.ATTACHMENT_TYPE_OTHER_NAME,
+		},
+		{
+			BaseAuditableEntity: primitives.BaseAuditableEntity{
+				BaseEntity: primitives.BaseEntity{
+					ID: object_values.ATTACHMENT_TYPE_PROFILE_ID,
+				},
+				IsActive:  true,
+				CreatedAt: time.Now(),
+				UpdatedAt: time.Now(),
+			},
+			Type: object_values.ATTACHMENT_TYPE_PROFILE_NAME,
+		},
+	}
+
+	for _, attachmentType := range attachmentTypes {
+		err := db.FirstOrCreate(&attachmentType).Error
+		if err != nil {
+			log.Printf("Failed to seed attachment type %s: %v", attachmentType.Type, err)
 		}
 	}
 }

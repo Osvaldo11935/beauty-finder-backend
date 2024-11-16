@@ -39,7 +39,7 @@ func (uc *AppointmentUseCase) FindAppointmentByProviderId(providerId uuid.UUID) 
 	findErr := uc.Repo.Query().
 		Preload("Service").
 		Preload("Status").
-		Preload("Client").
+		Preload("Client.Person").
 		Find(&data, "ProviderId", providerId).Error
 
 	if findErr != nil {
@@ -55,7 +55,7 @@ func (uc *AppointmentUseCase) FindAppointmentByClientId(clientId uuid.UUID) ([]e
 	findErr := uc.Repo.Query().
 		Preload("Service").
 		Preload("Status").
-		Preload("Provider").
+		Preload("Provider.Person").
 		Find(&data, "ClientId", clientId).Error
 
 	if findErr != nil {

@@ -8,13 +8,18 @@ import (
 	"net/http"
 	"src/internal/configs"
 	service_interface "src/internal/services/interface_services"
+	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	storage_go "github.com/supabase-community/storage-go"
 )
 
 type SupabaseStorageService struct {
-	BaseURL string
-	Bucket  string
+	BaseURL     string
+	Bucket      string
+	StorageURL  string
+	AccessToken string
 }
 
 func NewSupabaseStorageService() service_interface.IFileManager {
@@ -24,7 +29,11 @@ func NewSupabaseStorageService() service_interface.IFileManager {
 		return nil
 	}
 
-	return &SupabaseStorageService{BaseURL: loadEnv.SupaBaseUrl, Bucket: loadEnv.SupaBaseBucket}
+	return &SupabaseStorageService{
+		BaseURL:     loadEnv.SupaBaseUrl,
+		Bucket:      loadEnv.SupaBaseBucket,
+		AccessToken: loadEnv.SupaBaseToken,
+		StorageURL:  loadEnv.SupaBaseStorageUrl}
 
 }
 
@@ -46,37 +55,47 @@ func (s *SupabaseStorageService) Upload(fctx *gin.Context, filePath *string) (*s
 		return nil, fmt.Errorf("erro ao ler arquivo: %w", err)
 	}
 
-	url := fmt.Sprintf("%s/storage/v1/object/%s/%s", s.BaseURL, s.Bucket, filePath)
+	storageClient := storage_go.NewClient(s.StorageURL, s.AccessToken, nil)
 
-	req, err := http.NewRequest("POST", url, bytes.NewReader(fileContent))
+	fileReader := bytes.NewReader(fileContent)
+
+	fileNameSplit := strings.Split(fileHeader.Filename, ".")
+
+	if len(fileNameSplit) < 2 {
+		return nil, fmt.Errorf("erro: nome do arquivo inválido, sem extensão")
+	}
+
+	ext := fileNameSplit[len(fileNameSplit)-1]
+
+	fileName := fmt.Sprintf("%s.%s", uuid.New().String(), ext)
+
+	path := fmt.Sprintf("%s/%s", *filePath, fileName)
+
+	contentType := fileHeader.Header.Get("Content-Type")
+
+	result, err := storageClient.UploadFile(s.Bucket, path, fileReader, storage_go.FileOptions{
+		ContentType: &contentType})
+
 	if err != nil {
 		return nil, fmt.Errorf("erro ao criar requisição: %w", err)
 	}
 
-	req.Header.Set("Content-Type", "application/octet-stream")
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("erro ao fazer requisição: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusCreated {
-		body, _ := ioutil.ReadAll(resp.Body)
-		return nil, fmt.Errorf("erro ao fazer upload: Status %d - %s", resp.StatusCode, string(body))
-	}
-
+	log.Println("Result ", result)
 	log.Println("Upload realizado com sucesso!")
 
-	return &fileHeader.Filename, nil
+	return &fileName, nil
 }
 
 func (s *SupabaseStorageService) GetFileUrl(filePath string) (*string, error) {
-	url := fmt.Sprintf("%s/storage/v1/object/public/%s/%s", s.BaseURL, s.Bucket, filePath)
-	return &url, nil
+
+	storageClient := storage_go.NewClient(s.StorageURL, s.AccessToken, nil)
+
+	result := storageClient.GetPublicUrl(s.Bucket, filePath)
+
+	return &result.SignedURL, nil
 }
 func (s *SupabaseStorageService) Download(filePath string) ([]byte, error) {
+
 	url := fmt.Sprintf("%s/storage/v1/object/public/%s/%s", s.BaseURL, s.Bucket, filePath)
 	resp, err := http.Get(url)
 	if err != nil {

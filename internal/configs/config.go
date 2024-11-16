@@ -25,6 +25,8 @@ type Config struct {
 	FileConfigGoogleDrive              string
 	FileTokenGooGleDrive               string
 	SupaBaseUrl                        string
+	SupaBaseStorageUrl                 string
+	SupaBaseToken                      string
 	SupaBaseBucket                     string
 	SupaBaseFolderKeyName              string
 	SupaBaseFileConfigFireBase         string
@@ -61,6 +63,8 @@ func LoadConfig() (*Config, error) {
 		QueryingPersonData:                 os.Getenv("QUERYING_PERSONDATA"),
 		SupaBaseUrl:                        os.Getenv("SUPA_BASE_URL"),
 		SupaBaseBucket:                     os.Getenv("SUPA_BASE_BUCKET_NAME"),
+		SupaBaseStorageUrl:                 os.Getenv("SUPA_BASE_STORAGE_URL"),
+		SupaBaseToken:                      os.Getenv("SUPA_BASE_TOKEN"),
 		SupaBaseFolderKeyName:              os.Getenv("SUPA_BASE_FOLDER_KEY_NAME"),
 		SupaBaseFileConfigFireBase:         os.Getenv("SUPA_BASE_FILE_CONFIG_FIREBASE"),
 		SupaBaseFileConfigGoogleDriver:     os.Getenv("SUPA_BASE_FILE_CONFIG_GOOGLE_DRIVE"),

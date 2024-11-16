@@ -39,5 +39,6 @@ func NewRoute(setup *setup.HandlerSetup, pool *usecase.Pool) *gin.Engine {
     route_group.NewWebSocketRouteGroup(baseRoute, &setup.AppointmentHandler.UseCase);
 	route_group.NewUserRatingRouteGroup(baseRoute, *setup)
 	route_group.NewRatingTypeRouteGroup(baseRoute, *setup)
+	route_group.NewDispatchNotificationRouteGroup(baseRoute, *setup)
 	return router
 }

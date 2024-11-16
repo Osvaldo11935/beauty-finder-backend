@@ -123,6 +123,7 @@ func (uc *UserUseCase) FindUserByServiceId(serviceId uuid.UUID) ([]entities.User
 
 	findErr := uc.Repo.Query().
 		Preload("Service").
+		Preload("Provider.Attachment.AttachmentType").
 		Preload("Provider.Person").
 		Preload("Provider.Role").
 		Preload("Provider.FcmToken").
@@ -145,6 +146,7 @@ func (uc *UserUseCase) FindUserById(UserId uuid.UUID) (*entities.User, error) {
 	findErr := uc.Repo.Query().
 		Preload("Role").
 		Preload("Person").
+		Preload("Attachment.AttachmentType").
 		Preload("FcmToken").
 		First(&data, "Id", UserId).Error
 
@@ -238,6 +240,7 @@ func (uc *UserUseCase) FindUsersNearBy(serviceId uuid.UUID, latitude float64, lo
 		Preload("Provider.Address").
 		Preload("Provider.Role").
 		Preload("Provider.Person").
+		Preload("Provider.Attachment.AttachmentType").
 		Preload("Provider.FcmToken").
 		Where("ServiceId", serviceId).
 		Find(&serviceProviders).Error; err != nil {

@@ -36,7 +36,7 @@ func NewJwtTokenService() *JwtTokenService {
 }
 
 func (s *JwtTokenService) GenerateToken(email *string, userId string, claim []string) (*models_responses.TokenResponse, error) {
-	expirationTime := time.Now().Add(5 * time.Minute)
+	expirationTime := time.Now().Add(60 * time.Minute)
 
 	claims := &ClaimJwt{
 		UserID: userId,

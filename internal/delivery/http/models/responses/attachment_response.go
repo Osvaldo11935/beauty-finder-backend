@@ -32,3 +32,13 @@ func ToListAttachmentResponse(data []entities.Attachment) []AttachmentResponse {
 
 	return resp
 }
+
+func ToListAttachmentOptionResponse(data []*entities.Attachment) []AttachmentResponse {
+	var resp []AttachmentResponse
+
+	for _, item := range data {
+		resp = append(resp, *ToAttachmentResponse(item))
+	}
+
+	return resp
+}

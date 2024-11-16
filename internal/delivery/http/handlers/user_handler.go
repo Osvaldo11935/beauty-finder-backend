@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	models_requests_posts "src/internal/delivery/http/models/requests/posts"
 	models_requests_puts "src/internal/delivery/http/models/requests/put"
@@ -8,6 +9,7 @@ import (
 	"src/internal/domain/entities"
 	"src/internal/domain/object_values"
 	"src/internal/security"
+	service_interface "src/internal/services/interface_services"
 	"src/internal/usecase"
 	"strconv"
 
@@ -16,8 +18,9 @@ import (
 )
 
 type UserHandler struct {
-	UseCase usecase.UserUseCase
-	FcmTokenUseCase usecase.FcmTokenUseCase
+	UseCase            usecase.UserUseCase
+	FcmTokenUseCase    usecase.FcmTokenUseCase
+	FileManagerService service_interface.IFileManager
 }
 
 func (handler *UserHandler) CreateAdmin(ctx *gin.Context) {
@@ -186,6 +189,8 @@ func (handler UserHandler) FindUsersNearBy(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, data)
 }
 func (handler UserHandler) FindUserById(ctx *gin.Context) {
+	filepath := "Doc-User"
+
 	userId, _ := ctx.Get("userId")
 
 	data, findErr := handler.UseCase.FindUserById(uuid.MustParse(userId.(string)))
@@ -193,6 +198,16 @@ func (handler UserHandler) FindUserById(ctx *gin.Context) {
 	if findErr != nil {
 		ctx.JSON(http.StatusBadRequest, findErr)
 		return
+	}
+
+	for i := 0; i < len(data.Attachment); i++ {
+		path := fmt.Sprintf("%s/%s", filepath, data.Attachment[i].Url)
+		url, findUrlErr := handler.FileManagerService.GetFileUrl(path)
+
+		if findUrlErr != nil {
+
+		}
+		data.Attachment[i].Url = *url
 	}
 
 	resp := models_responses.ToUserResponse(data)
@@ -280,10 +295,9 @@ func (handler *UserHandler) Remove(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, nil)
 }
 func (handler *UserHandler) DispatchStartConversationNotification(ctx *gin.Context) {
-	
+
 	userRequiredId := uuid.MustParse(ctx.Param("userRequiredId"))
 	userApplicantId := uuid.MustParse(ctx.Param("userApplicantId"))
-	
 
 	handler.FcmTokenUseCase.DispatchStartConversationNotification(ctx, userApplicantId, userRequiredId)
 

@@ -1,12 +1,14 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	models_requests_posts "src/internal/delivery/http/models/requests/posts"
 	models_requests_puts "src/internal/delivery/http/models/requests/put"
 	models_responses "src/internal/delivery/http/models/responses"
 	service_interface "src/internal/services/interface_services"
 	"src/internal/usecase"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -17,7 +19,7 @@ type AttachmentHandler struct {
 }
 
 func (handler *AttachmentHandler) CreateAttachmentUser(ctx *gin.Context) {
-    filepath := "Doc-User"
+	filepath := "Doc-User"
 	userId := uuid.MustParse(ctx.Param("userId"))
 
 	attachmentTypeId := uuid.MustParse(ctx.Param("attachmentTypeId"))
@@ -45,7 +47,7 @@ func (handler *AttachmentHandler) CreateAttachmentUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, models_responses.NewCreateResponse(*id))
 }
 func (handler *AttachmentHandler) CreateAttachmentService(ctx *gin.Context) {
-    filepath := "Img-Service"
+	filepath := "Img-Service"
 
 	serviceId := uuid.MustParse(ctx.Param("serviceId"))
 
@@ -74,8 +76,8 @@ func (handler *AttachmentHandler) CreateAttachmentService(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, models_responses.NewCreateResponse(*id))
 }
 func (handler *AttachmentHandler) CreateAttachmentCategory(ctx *gin.Context) {
-    filepath := "Img-Category"
-	
+	filepath := "Img-Category"
+
 	categoryId := uuid.MustParse(ctx.Param("categoryId"))
 
 	attachmentTypeId := uuid.MustParse(ctx.Param("attachmentTypeId"))
@@ -103,7 +105,7 @@ func (handler *AttachmentHandler) CreateAttachmentCategory(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, models_responses.NewCreateResponse(*id))
 }
 func (handler *AttachmentHandler) FindAttachmentByUserId(ctx *gin.Context) {
-	
+	filepath := "Doc-User"
 	userId := uuid.MustParse(ctx.Param("userId"))
 
 	data, findErr := handler.UseCase.FindAttachmentByUserId(userId)
@@ -113,11 +115,25 @@ func (handler *AttachmentHandler) FindAttachmentByUserId(ctx *gin.Context) {
 		return
 	}
 
+	for i := 0; i < len(data); i++ {
+
+		path := fmt.Sprintf("%s/%s", filepath, data[i].Url)
+		url, findUrlErr := handler.FileManagerService.GetFileUrl(path)
+
+		if findUrlErr != nil {
+			fmt.Printf(findUrlErr.Error())
+		}
+
+		data[i].Url = *url
+	}
+
 	resp := models_responses.ToListAttachmentResponse(data)
 
 	ctx.JSON(http.StatusOK, resp)
 }
 func (handler *AttachmentHandler) FindAttachmentByCategoryId(ctx *gin.Context) {
+    
+	filepath := "Img-Category"
 
 	categoryId := uuid.MustParse(ctx.Param("categoryId"))
 
@@ -128,11 +144,20 @@ func (handler *AttachmentHandler) FindAttachmentByCategoryId(ctx *gin.Context) {
 		return
 	}
 
+	path := fmt.Sprintf("%s/%s", filepath, data.Url)
+	url, findUrlErr := handler.FileManagerService.GetFileUrl(path)
+
+	if findUrlErr != nil {
+		fmt.Printf(findUrlErr.Error())
+	}
+	data.Url = *url
+
 	resp := models_responses.ToAttachmentResponse(data)
 
 	ctx.JSON(http.StatusOK, resp)
 }
 func (handler *AttachmentHandler) FindAttachmentByServiceId(ctx *gin.Context) {
+    filepath := "Img-Service"
 
 	serviceId := uuid.MustParse(ctx.Param("serviceId"))
 
@@ -143,10 +168,20 @@ func (handler *AttachmentHandler) FindAttachmentByServiceId(ctx *gin.Context) {
 		return
 	}
 
+	path := fmt.Sprintf("%s/%s", filepath, data.Url)
+	url, findUrlErr := handler.FileManagerService.GetFileUrl(path)
+
+	if findUrlErr != nil {
+		fmt.Printf(findUrlErr.Error())
+	}
+
+	data.Url = *url
+
 	resp := models_responses.ToAttachmentResponse(data)
 
 	ctx.JSON(http.StatusOK, resp)
 }
+
 func (handler AttachmentHandler) FindAttachmentById(ctx *gin.Context) {
 	attachmentId, paramErr := uuid.Parse(ctx.Param("attachmentId"))
 

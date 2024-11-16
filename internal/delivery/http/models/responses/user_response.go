@@ -8,13 +8,14 @@ import (
 )
 
 type UserResponse struct {
-	Id          uuid.UUID       `json:"id"`
-	Email       *string         `json:"email"`
-	UserName    *string         `json:"userName"`
-	PhoneNumber string          `json:"phoneNumber"`
-	Person      *PersonResponse `json:"person"`
-	Conn        *websocket.Conn `json:"conn"`
-	Role        *RoleResponse   `json:"role"`
+	Id          uuid.UUID             `json:"id"`
+	Email       *string               `json:"email"`
+	UserName    *string               `json:"userName"`
+	PhoneNumber string                `json:"phoneNumber"`
+	Person      *PersonResponse       `json:"person"`
+	Conn        *websocket.Conn       `json:"conn"`
+	Role        *RoleResponse         `json:"role"`
+	Attachment  *[]AttachmentResponse `json:"attachment"`
 }
 
 func ToUserResponse(data *entities.User) *UserResponse {
@@ -22,7 +23,7 @@ func ToUserResponse(data *entities.User) *UserResponse {
 	if data == nil {
 		return nil
 	}
-
+    attachment := ToListAttachmentOptionResponse(data.Attachment)
 	return &UserResponse{
 		Id:          data.ID,
 		Email:       data.Email,
@@ -31,6 +32,7 @@ func ToUserResponse(data *entities.User) *UserResponse {
 		Person:      ToPersonResponse(data.Person),
 		Conn:        data.Conn,
 		Role:        ToRoleResponse(data.Role),
+		Attachment: &attachment,
 	}
 }
 
