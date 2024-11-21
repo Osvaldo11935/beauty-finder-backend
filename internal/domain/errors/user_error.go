@@ -6,17 +6,24 @@ func UnknownCreateUserError(description string) error {
 	return error_common.NewCustomError(error_common.ERR_UNKNOWN,
 		"Falha ao cadastrar dados do usuario", description, nil)
 }
+
 func UnknownFindUserError(description string) error {
 	return error_common.NewCustomError(error_common.ERR_UNKNOWN,
 		"Falha ao buscar dados do usuario", description, nil)
 }
+
+func NotFoundFindUserError() error {
+	return error_common.NewCustomError(error_common.ERR_NOTFOUND,
+		"Falha ao buscar dados do usuario", "Usuario não encontrado.", nil)
+}
+
 func NotFoundServiceProviderError() error {
 	return error_common.NewCustomError(error_common.ERR_UNKNOWN,
-		"Falha ao buscar dados do usuario",  "Provedor não encontrado.", nil)
+		"Falha ao buscar dados do usuario", "Provedor não encontrado.", nil)
 }
 func NotFoundUserError() error {
 	return error_common.NewCustomError(error_common.ERR_USER_NOTFOUND,
-		"Falha ao buscar dados do usuario",  "Usuario não encontrado.", nil)
+		"Falha ao buscar dados do usuario", "Usuario não encontrado.", nil)
 }
 func UnknownDeleteUserError(description string) error {
 	return error_common.NewCustomError(error_common.ERR_UNKNOWN,

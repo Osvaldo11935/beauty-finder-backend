@@ -22,6 +22,7 @@ type RepositorySetup struct {
 	UserRepository              interfaces_repositories.IUserRepository
 	RatingTypeRepository        interfaces_repositories.IRatingTypeRepository
 	UserRatingRepository        interfaces_repositories.IUserRatingRepository
+	CompanyRepository           interfaces_repositories.ICompanyRepository
 }
 
 func NewRepositorySetup(db *gorm.DB) *RepositorySetup {
@@ -38,7 +39,8 @@ func NewRepositorySetup(db *gorm.DB) *RepositorySetup {
 		ServiceRepository:           repositories.NewServiceRepository(db),
 		ServicePriceRepository:      repositories.NewServicePriceRepository(db),
 		UserRepository:              repositories.NewUserRepository(db),
-		RatingTypeRepository: repositories.NewRatingTypeRepository(db),
-		UserRatingRepository: repositories.NewUserRatingRepository(db),
+		RatingTypeRepository:        repositories.NewRatingTypeRepository(db),
+		UserRatingRepository:        repositories.NewUserRatingRepository(db),
+		CompanyRepository:           repositories.NewCompanyRepository(db),
 	}
 }

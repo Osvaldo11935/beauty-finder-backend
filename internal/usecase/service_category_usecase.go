@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	err "errors"
 	models_requests_posts "src/internal/delivery/http/models/requests/posts"
 	models_requests_puts "src/internal/delivery/http/models/requests/put"
 	"src/internal/domain/entities"
@@ -8,6 +9,7 @@ import (
 	"src/internal/domain/interfaces_repositories"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type ServiceCategoryUseCase struct {
@@ -35,6 +37,9 @@ func (uc *ServiceCategoryUseCase) FindAllServiceCategory() ([]entities.ServiceCa
 		Find(&data).Error
 
 	if findErr != nil {
+		if err.Is(findErr, gorm.ErrRecordNotFound) {
+			return nil, errors.NotFoundFindCategoryError()
+		}
 		return nil, errors.UnknownFindCategoryError(findErr.Error())
 	}
 
@@ -49,6 +54,9 @@ func (uc *ServiceCategoryUseCase) FindServiceCategoryById(categoryId uuid.UUID) 
 		First(&data, "ID", categoryId).Error
 
 	if findErr != nil {
+		if err.Is(findErr, gorm.ErrRecordNotFound) {
+			return nil, errors.NotFoundFindCategoryError()
+		}
 		return nil, errors.UnknownFindCategoryError(findErr.Error())
 	}
 

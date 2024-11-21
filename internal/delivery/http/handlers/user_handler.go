@@ -71,6 +71,30 @@ func (handler *UserHandler) CreateClient(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, models_responses.NewCreateResponse(*id))
 }
+func (handler *UserHandler) CreateManager(ctx *gin.Context) {
+	body, paramExists := ctx.Get("request")
+
+	if !paramExists {
+		ctx.JSON(http.StatusBadRequest, "Request data not found")
+		return
+	}
+
+	request, serializerErr := body.(models_requests_posts.CreateUserRequest)
+
+	if !serializerErr {
+		ctx.JSON(http.StatusBadRequest, "Failed to parse request")
+		return
+	}
+
+	id, createErr := handler.UseCase.InsertUser(object_values.ROLE_MANAGER_ID, request)
+
+	if createErr != nil {
+		ctx.JSON(http.StatusBadRequest, createErr)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, models_responses.NewCreateResponse(*id))
+}
 func (handler *UserHandler) CreateServiceProvider(ctx *gin.Context) {
 
 	body, paramExists := ctx.Get("request")

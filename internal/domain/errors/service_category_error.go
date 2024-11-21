@@ -10,6 +10,12 @@ func UnknownFindCategoryError(description string) error {
 	return error_common.NewCustomError(error_common.ERR_UNKNOWN,
 		"Falha ao buscar categoria", description, nil)
 }
+
+func NotFoundFindCategoryError() error {
+	return error_common.NewCustomError(error_common.ERR_NOTFOUND,
+		"Falha ao buscar categoria", "Categoria não encontrada", nil)
+}
+
 func UnknownDeleteCategoryError(description string) error {
 	return error_common.NewCustomError(error_common.ERR_UNKNOWN,
 		"Falha ao deletar categoria", description, nil)

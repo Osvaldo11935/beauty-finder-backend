@@ -10,6 +10,12 @@ func UnknownFindServicePriceError(description string) error {
 	return error_common.NewCustomError(error_common.ERR_UNKNOWN,
 		"Falha ao buscar preço do serviço", description, nil)
 }
+
+func NotFoundFindServicePriceError() error {
+	return error_common.NewCustomError(error_common.ERR_NOTFOUND,
+		"Falha ao buscar preço do serviço", "Preço do serviço não encontrado.", nil)
+}
+
 func UnknownDeleteServicePriceError(description string) error {
 	return error_common.NewCustomError(error_common.ERR_UNKNOWN,
 		"Falha ao deletar preço do serviço", description, nil)

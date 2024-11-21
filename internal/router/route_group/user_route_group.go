@@ -13,6 +13,7 @@ func NewUserRouteGroup(route *gin.RouterGroup, handler setup.HandlerSetup) {
 	r.POST("token", handler.UserHandler.FindToken)
 	r.POST("admin", middlewares.Auth(), middlewares.ValidateUserMiddleware(), handler.UserHandler.CreateAdmin)
 	r.POST("client", middlewares.ValidateUserMiddleware(), handler.UserHandler.CreateClient)
+	r.POST("manager", middlewares.ValidateUserMiddleware(), handler.UserHandler.CreateManager)
 	r.POST("service-provider", middlewares.ValidateUserMiddleware(), handler.UserHandler.CreateServiceProvider)
 	r.POST(":userId/service-provided", middlewares.Auth(), handler.UserHandler.CreateServiceProvided)
 	r.POST(":userId/fcm-token", middlewares.Auth(), handler.UserHandler.CreateFcmToken)

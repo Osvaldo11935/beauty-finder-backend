@@ -55,6 +55,17 @@ func SeedRole(db *gorm.DB) {
 			},
 			Name: object_values.ROLE_SERVICE_PROVIDER_NAME,
 		},
+		{
+			BaseAuditableEntity: primitives.BaseAuditableEntity{
+				BaseEntity: primitives.BaseEntity{
+					ID: object_values.ROLE_MANAGER_ID,
+				},
+				IsActive:  true,
+				CreatedAt: time.Now(),
+				UpdatedAt: time.Now(),
+			},
+			Name: object_values.ROLE_MANAGER_NAME,
+		},
 	}
 
 	for _, rl := range roles {

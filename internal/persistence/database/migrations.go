@@ -28,6 +28,7 @@ func RunMigration(db *gorm.DB) {
 		entities.ServiceProvider{},
 		entities.RatingType{},
 		entities.UserRating{},
+		entities.Company{},
 	)
 
 	if migrationErr != nil {

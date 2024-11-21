@@ -21,6 +21,7 @@ type Address struct {
 	Longitude     float64    `gorm:"column:Longitude;" json:"longitude"`
 	UserId        *uuid.UUID `gorm:"column:UserId;" json:"userId"`
 	AppointmentId *uuid.UUID `gorm:"column:AppointmentId;" json:"appointmentId"`
+	CompanyId     *uuid.UUID `gorm:"column:CompanyId;" json:"companyId"`
 }
 
 func (s *Address) TableName() string {
@@ -58,6 +59,24 @@ func NewAddressAppointment(appointmentId uuid.UUID, request models_requests_post
 		Latitude:            request.Latitude,
 		Longitude:           request.Longitude,
 		AppointmentId:       &appointmentId,
+	}
+
+	return body
+}
+
+func NewAddressCompany(companyId uuid.UUID, request models_requests_posts.CreateAddressRequest) Address {
+	body := Address{
+		BaseAuditableEntity: *primitives.NewBaseAuditableEntity(),
+		District:            request.District,
+		Commune:             request.Commune,
+		Province:            request.Province,
+		Country:             request.Country,
+		City:                request.City,
+		Street:              request.Street,
+		Neighborhood:        request.Neighborhood,
+		Latitude:            request.Latitude,
+		Longitude:           request.Longitude,
+		CompanyId:           &companyId,
 	}
 
 	return body

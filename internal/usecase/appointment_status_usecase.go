@@ -7,81 +7,89 @@ import (
 	"src/internal/domain/errors"
 	"src/internal/domain/interfaces_repositories"
 
+	err "errors"
+
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type AppointmentStatusUseCase struct {
 	Repo interfaces_repositories.IAppointmentStatusRepository
 }
 
+func (uc *AppointmentStatusUseCase) InsertAppointmentStatus(request models_requests_posts.CreateAppointmentStatusRequest) (*uuid.UUID, error) {
+	req := entities.NewAppointmentStatus(request.Type, request.Description)
 
-func(uc *AppointmentStatusUseCase) InsertAppointmentStatus(request models_requests_posts.CreateAppointmentStatusRequest) (*uuid.UUID, error){
-	 req := entities.NewAppointmentStatus(request.Type, request.Description)
+	createErr := uc.Repo.Insert(&req)
 
-	 createErr := uc.Repo.Insert(&req)
-
-	 if createErr != nil {
+	if createErr != nil {
 		return nil, errors.UnknownCreateStatusError(createErr.Error())
-	 }
+	}
 
-	 return &req.ID, nil
+	return &req.ID, nil
 }
 
-func(uc *AppointmentStatusUseCase) FindAllAppointmentStatus() ([]entities.AppointmentStatus, error){
-	
+func (uc *AppointmentStatusUseCase) FindAllAppointmentStatus() ([]entities.AppointmentStatus, error) {
+
 	var data []entities.AppointmentStatus
 
 	findErr := uc.Repo.Query().Find(&data).Error
 
 	if findErr != nil {
-	   return nil, errors.UnknownFindStatusError(findErr.Error())
+		if err.Is(findErr, gorm.ErrRecordNotFound) {
+			return nil, errors.NotFoundFindStatusError()
+		}
+		return nil, errors.UnknownFindStatusError(findErr.Error())
 	}
 
 	return data, nil
 }
 
-func(uc *AppointmentStatusUseCase) FindAppointmentStatusById(statusId uuid.UUID) (*entities.AppointmentStatus, error){
+func (uc *AppointmentStatusUseCase) FindAppointmentStatusById(statusId uuid.UUID) (*entities.AppointmentStatus, error) {
 	var data entities.AppointmentStatus
 
 	findErr := uc.Repo.Query().First(&data, "ID", statusId).Error
 
 	if findErr != nil {
-	   return nil, errors.UnknownFindStatusError(findErr.Error())
+		if err.Is(findErr, gorm.ErrRecordNotFound) {
+			return nil, errors.NotFoundFindStatusError()
+		}
+		return nil, errors.UnknownFindStatusError(findErr.Error())
 	}
 
 	return &data, nil
 }
 
-func(uc *AppointmentStatusUseCase) UpdateAppointmentStatus(statusId uuid.UUID, request models_requests_puts.UpdateAppointmentStatusRequest) (error){
-	
+func (uc *AppointmentStatusUseCase) UpdateAppointmentStatus(statusId uuid.UUID, request models_requests_puts.UpdateAppointmentStatusRequest) error {
+
 	status, findErr := uc.FindAppointmentStatusById(statusId)
 
-	if findErr !=nil {
+	if findErr != nil {
 		return findErr
 	}
 
 	status.Update(request.Type, request.Description)
-	
+
 	updateErr := uc.Repo.Update(status)
 
 	if updateErr != nil {
-	   return errors.UnknownUpdateStatusError(updateErr.Error())
+		return errors.UnknownUpdateStatusError(updateErr.Error())
 	}
 
 	return nil
 }
 
-func(uc *AppointmentStatusUseCase) DeleteAppointmentStatus(statusId uuid.UUID) error{
-	
+func (uc *AppointmentStatusUseCase) DeleteAppointmentStatus(statusId uuid.UUID) error {
+
 	status, findErr := uc.FindAppointmentStatusById(statusId)
 
-	if findErr !=nil {
+	if findErr != nil {
 		return findErr
 	}
 
-    removeErr := uc.Repo.Remove(status)
+	removeErr := uc.Repo.Remove(status)
 
-	if removeErr !=nil {
+	if removeErr != nil {
 		return errors.UnknownDeleteStatusError(removeErr.Error())
 	}
 

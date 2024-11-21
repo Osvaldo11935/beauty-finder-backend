@@ -23,6 +23,7 @@ type UseCaseSetup struct {
 	UseCaseFcmToken          usecase.FcmTokenUseCase
 	UseCaseRatingType        usecase.RatingTypeUseCase
 	UseCaseUserRating        usecase.UserRatingUseCase
+	UseCaseCompany           usecase.CompanyUseCase
 }
 
 func NewUseCaseSetup(setup *RepositorySetup) *UseCaseSetup {
@@ -40,8 +41,8 @@ func NewUseCaseSetup(setup *RepositorySetup) *UseCaseSetup {
 		UseCaseServicePrice:      usecase.ServicePriceUseCase{Repo: setup.ServicePriceRepository},
 		UseCaseUser:              usecase.UserUseCase{Repo: setup.PersonRepository},
 		UseCaseUserRating:        usecase.UserRatingUseCase{Repo: setup.UserRatingRepository},
-
-		UseCaseRatingType: usecase.RatingTypeUseCase{Repo: setup.RatingTypeRepository},
+		UseCaseRatingType:        usecase.RatingTypeUseCase{Repo: setup.RatingTypeRepository},
+		UseCaseCompany:           usecase.CompanyUseCase{Repo: setup.CompanyRepository, HttpClientUseCase: *usecase.NewHttpClientUseCase(3600 * time.Second)},
 		UseCaseHttpClient: *usecase.NewHttpClientUseCase(3600 * time.Second),
 		UseCaseFcmToken: usecase.FcmTokenUseCase{UserUseCase: usecase.UserUseCase{Repo: setup.PersonRepository},
 			FileManagerService: services.NewSupabaseStorageService()},

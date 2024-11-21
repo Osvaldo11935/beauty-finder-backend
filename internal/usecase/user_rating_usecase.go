@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	err "errors"
 	models_requests_posts "src/internal/delivery/http/models/requests/posts"
 	models_requests_puts "src/internal/delivery/http/models/requests/put"
 	"src/internal/domain/entities"
@@ -8,6 +9,7 @@ import (
 	"src/internal/domain/interfaces_repositories"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type UserRatingUseCase struct {
@@ -36,6 +38,9 @@ func (uc *UserRatingUseCase) FindAllUserRating() ([]entities.UserRating, error) 
 		Find(&data).Error
 
 	if findErr != nil {
+		if err.Is(findErr, gorm.ErrRecordNotFound) {
+			return nil, errors.NotFoundFindUserRatingError()
+		}
 		return nil, errors.UnknownFindUserRatingError(findErr.Error())
 	}
 
@@ -52,6 +57,9 @@ func (uc *UserRatingUseCase) FindUserRatingByUserId(userId uuid.UUID) ([]entitie
 		Find(&data).Error
 
 	if findErr != nil {
+		if err.Is(findErr, gorm.ErrRecordNotFound) {
+			return nil, errors.NotFoundFindUserRatingError()
+		}
 		return nil, errors.UnknownFindUserRatingError(findErr.Error())
 	}
 
@@ -66,6 +74,9 @@ func (uc *UserRatingUseCase) FindUserRatingById(userRatingId uuid.UUID) (*entiti
 		First(&data, "ID", userRatingId).Error
 
 	if findErr != nil {
+		if err.Is(findErr, gorm.ErrRecordNotFound) {
+			return nil, errors.NotFoundFindUserRatingError()
+		}
 		return nil, errors.UnknownFindUserRatingError(findErr.Error())
 	}
 

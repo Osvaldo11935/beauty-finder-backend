@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	err "errors"
 	models_requests_posts "src/internal/delivery/http/models/requests/posts"
 	models_requests_puts "src/internal/delivery/http/models/requests/put"
 	"src/internal/domain/entities"
@@ -8,6 +9,7 @@ import (
 	"src/internal/domain/interfaces_repositories"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type AppointmentUseCase struct {
@@ -43,6 +45,9 @@ func (uc *AppointmentUseCase) FindAppointmentByProviderId(providerId uuid.UUID) 
 		Find(&data, "ProviderId", providerId).Error
 
 	if findErr != nil {
+		if err.Is(findErr, gorm.ErrRecordNotFound) {
+			return nil, errors.NotFoundFindAppointmentError()
+		}
 		return nil, errors.UnknownFindAppointmentError(findErr.Error())
 	}
 
@@ -59,6 +64,9 @@ func (uc *AppointmentUseCase) FindAppointmentByClientId(clientId uuid.UUID) ([]e
 		Find(&data, "ClientId", clientId).Error
 
 	if findErr != nil {
+		if err.Is(findErr, gorm.ErrRecordNotFound) {
+			return nil, errors.NotFoundFindAppointmentError()
+		}
 		return nil, errors.UnknownFindAppointmentError(findErr.Error())
 	}
 
@@ -80,6 +88,9 @@ func (uc *AppointmentUseCase) FindAppointmentById(Id uuid.UUID) (*entities.Appoi
 		First(&data, "Id", Id).Error
 
 	if findErr != nil {
+		if err.Is(findErr, gorm.ErrRecordNotFound) {
+			return nil, errors.NotFoundFindAppointmentError()
+		}
 		return nil, errors.UnknownFindAppointmentError(findErr.Error())
 	}
 
@@ -104,6 +115,7 @@ func (uc *AppointmentUseCase) UpdateAppointment(Id uuid.UUID, request models_req
 
 	return nil
 }
+
 func (uc *AppointmentUseCase) UpdateStatusTypeAppointment(Id uuid.UUID, request uuid.UUID) error {
 
 	appointment, findErr := uc.FindAppointmentById(Id)
@@ -122,6 +134,7 @@ func (uc *AppointmentUseCase) UpdateStatusTypeAppointment(Id uuid.UUID, request 
 
 	return nil
 }
+
 func (uc *AppointmentUseCase) SetProviderAppointment(Id uuid.UUID, request models_requests_puts.UpdateAppointmentRequest) error {
 
 	appointment, findErr := uc.FindAppointmentById(Id)

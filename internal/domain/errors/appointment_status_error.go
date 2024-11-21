@@ -20,6 +20,10 @@ func UnknownUpdateStatusError(description string) error {
 	return error_common.NewCustomError(error_common.ERR_UNKNOWN,
 		"Falha ao atualizar estado", description, nil)
 }
+func NotFoundFindStatusError() error {
+	return error_common.NewCustomError(error_common.ERR_NOTFOUND,
+		"Falha ao buscar estado", "Estado não encontrado", nil)
+}
 func ValidateCreateStatusError(err []string) error {
 	return error_common.NewCustomError(error_common.ERR_VALIDATE,
 		"Ocorreu um erro ao registrar estado", "", err)

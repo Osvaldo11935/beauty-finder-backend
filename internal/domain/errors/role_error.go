@@ -6,10 +6,17 @@ func UnknownCreateRoleError(description string) error {
 	return error_common.NewCustomError(error_common.ERR_UNKNOWN,
 		"Falha ao cadastrar perfil", description, nil)
 }
+
 func UnknownFindRoleError(description string) error {
 	return error_common.NewCustomError(error_common.ERR_UNKNOWN,
 		"Falha ao buscar perfil", description, nil)
 }
+
+func NotFoundFindRoleError() error {
+	return error_common.NewCustomError(error_common.ERR_NOTFOUND,
+		"Falha ao buscar perfil", "Perfil não encontrado.", nil)
+}
+
 func UnknownDeleteRoleError(description string) error {
 	return error_common.NewCustomError(error_common.ERR_UNKNOWN,
 		"Falha ao deletar perfil", description, nil)

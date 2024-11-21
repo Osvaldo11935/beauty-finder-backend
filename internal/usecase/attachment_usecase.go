@@ -7,7 +7,10 @@ import (
 	"src/internal/domain/errors"
 	"src/internal/domain/interfaces_repositories"
 
+	err "errors"
+
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type AttachmentUseCase struct {
@@ -45,6 +48,9 @@ func (uc *AttachmentUseCase) FindAttachmentByUserId(userId uuid.UUID) ([]entitie
 		Find(&data, "UserId", userId).Error
 
 	if findErr != nil {
+		if err.Is(findErr, gorm.ErrRecordNotFound) {
+			return nil, errors.NotFoundFindAttachmentError()
+		}
 		return nil, errors.UnknownFindAttachmentError(findErr.Error())
 	}
 
@@ -59,6 +65,9 @@ func (uc *AttachmentUseCase) FindAttachmentByCategoryId(categoryId uuid.UUID) (*
 		Find(&data, "CategoryId", categoryId).Error
 
 	if findErr != nil {
+		if err.Is(findErr, gorm.ErrRecordNotFound) {
+			return nil, errors.NotFoundFindAttachmentError()
+		}
 		return nil, errors.UnknownFindAttachmentError(findErr.Error())
 	}
 
@@ -73,6 +82,9 @@ func (uc *AttachmentUseCase) FindAttachmentByServiceId(serviceId uuid.UUID) (*en
 		Find(&data, "ServiceId", serviceId).Error
 
 	if findErr != nil {
+		if err.Is(findErr, gorm.ErrRecordNotFound) {
+			return nil, errors.NotFoundFindAttachmentError()
+		}
 		return nil, errors.UnknownFindAttachmentError(findErr.Error())
 	}
 
@@ -86,6 +98,9 @@ func (uc *AttachmentUseCase) FindAttachmentById(AttachmentId uuid.UUID) (*entiti
 		First(&data, "ID", AttachmentId).Error
 
 	if findErr != nil {
+		if err.Is(findErr, gorm.ErrRecordNotFound) {
+			return nil, errors.NotFoundFindAttachmentError()
+		}
 		return nil, errors.UnknownFindAttachmentError(findErr.Error())
 	}
 

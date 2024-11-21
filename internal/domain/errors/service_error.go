@@ -6,10 +6,17 @@ func UnknownCreateServiceError(description string) error {
 	return error_common.NewCustomError(error_common.ERR_UNKNOWN,
 		"Falha ao cadastrar serviço", description, nil)
 }
+
 func UnknownFindServiceError(description string) error {
 	return error_common.NewCustomError(error_common.ERR_UNKNOWN,
 		"Falha ao buscar serviço", description, nil)
 }
+
+func NotFoundFindServiceError() error {
+	return error_common.NewCustomError(error_common.ERR_NOTFOUND,
+		"Falha ao buscar serviço", "Serviço não encontrado", nil)
+}
+
 func UnknownDeleteServiceError(description string) error {
 	return error_common.NewCustomError(error_common.ERR_UNKNOWN,
 		"Falha ao deletar serviço", description, nil)

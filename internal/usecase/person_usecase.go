@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"encoding/json"
+	err "errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -15,6 +16,7 @@ import (
 	"src/internal/domain/interfaces_repositories"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type PersonUseCase struct {
@@ -52,6 +54,9 @@ func (uc *PersonUseCase) FindPersonByUserId(userId uuid.UUID) (*entities.Person,
 		First(&data, "UserId", userId).Error
 
 	if findErr != nil {
+		if err.Is(findErr, gorm.ErrRecordNotFound) {
+			return nil, errors.NotFoundFindPersonError()
+		}
 		return nil, errors.UnknownFindPersonError(findErr.Error())
 	}
 
@@ -62,7 +67,7 @@ func (uc *PersonUseCase) FindPersonDataFromGovernmentApi(ctx context.Context, na
 	var apiResponse models_responses.PersonByNationalRegistry
 
 	config, configErr := configs.LoadConfig()
-	
+
 	if configErr != nil {
 		fmt.Println("Erro ao carregar as configurações:", configErr)
 		return nil, configErr
@@ -123,6 +128,7 @@ func (uc *PersonUseCase) UpdatePerson(userId uuid.UUID, request models_requests_
 
 	return nil
 }
+
 func (uc *PersonUseCase) DeletePerson(userId uuid.UUID) error {
 
 	person, findErr := uc.FindPersonByUserId(userId)

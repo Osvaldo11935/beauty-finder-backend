@@ -10,6 +10,11 @@ func UnknownFindAppointmentError(description string) error {
 	return error_common.NewCustomError(error_common.ERR_UNKNOWN,
 		"Falha ao buscar agendamento", description, nil)
 }
+func NotFoundFindAppointmentError() error {
+	return error_common.NewCustomError(error_common.ERR_NOTFOUND,
+		"Falha ao buscar agendamento", "Agendamento não encontrado", nil)
+}
+
 func UnknownDeleteAppointmentError(description string) error {
 	return error_common.NewCustomError(error_common.ERR_UNKNOWN,
 		"Falha ao deletar agendamento", description, nil)

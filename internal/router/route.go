@@ -12,7 +12,7 @@ import (
 
 func NewRoute(setup *setup.HandlerSetup, pool *usecase.Pool) *gin.Engine {
 	router := gin.Default()
-	
+
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"},
@@ -23,7 +23,7 @@ func NewRoute(setup *setup.HandlerSetup, pool *usecase.Pool) *gin.Engine {
 	}))
 
 	baseRoute := router.Group("/api")
-    route_group.NewAddressRouteGroup(baseRoute, *setup)
+	route_group.NewAddressRouteGroup(baseRoute, *setup)
 	route_group.NewAppointmentRouteGroup(baseRoute, *setup)
 	route_group.NewAppointmentStatusRouteGroup(baseRoute, setup.AppointmentStatusHandler)
 	route_group.NewAttachmentRouteGroup(baseRoute, *setup)
@@ -36,9 +36,10 @@ func NewRoute(setup *setup.HandlerSetup, pool *usecase.Pool) *gin.Engine {
 	route_group.NewServiceRouteGroup(baseRoute, *setup)
 	route_group.NewUserRouteGroup(baseRoute, *setup)
 	route_group.NewChatRouteGroup(baseRoute, &setup.UserHandler.UseCase, pool)
-    route_group.NewWebSocketRouteGroup(baseRoute, &setup.AppointmentHandler.UseCase);
+	route_group.NewWebSocketRouteGroup(baseRoute, &setup.AppointmentHandler.UseCase)
 	route_group.NewUserRatingRouteGroup(baseRoute, *setup)
 	route_group.NewRatingTypeRouteGroup(baseRoute, *setup)
+	route_group.NewCompanyRouteGroup(baseRoute, *setup)
 	route_group.NewDispatchNotificationRouteGroup(baseRoute, *setup)
 	return router
 }

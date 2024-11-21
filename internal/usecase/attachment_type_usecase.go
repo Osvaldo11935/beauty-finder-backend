@@ -1,7 +1,7 @@
 package usecase
 
-
 import (
+	err "errors"
 	models_requests_posts "src/internal/delivery/http/models/requests/posts"
 	models_requests_puts "src/internal/delivery/http/models/requests/put"
 	"src/internal/domain/entities"
@@ -9,6 +9,7 @@ import (
 	"src/internal/domain/interfaces_repositories"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type AttachmentTypeUseCase struct {
@@ -35,6 +36,9 @@ func(uc *AttachmentTypeUseCase) FindAllAttachmentType() ([]entities.AttachmentTy
 	findErr := uc.Repo.Query().Find(&data).Error
 
 	if findErr != nil {
+	   if err.Is(findErr, gorm.ErrRecordNotFound) {
+			return nil, errors.NotFoundFindAttachmentTypeError()
+	   }
 	   return nil, errors.UnknownFindAttachmentTypeError(findErr.Error())
 	}
 
@@ -47,6 +51,9 @@ func(uc *AttachmentTypeUseCase) FindAttachmentTypeById(AttachmentTypeId uuid.UUI
 	findErr := uc.Repo.Query().First(&data, "ID", AttachmentTypeId).Error
 
 	if findErr != nil {
+	   if err.Is(findErr, gorm.ErrRecordNotFound) {
+			return nil, errors.NotFoundFindAttachmentTypeError()
+	   }	
 	   return nil, errors.UnknownFindAttachmentTypeError(findErr.Error())
 	}
 

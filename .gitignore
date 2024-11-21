@@ -1,0 +1,35 @@
+# Diretórios e arquivos gerados pelo Go
+/bin/
+*.exe
+*.test
+*.out
+
+# Dependências e módulos do Go
+/go.mod
+/go.sum
+
+# Diretórios e arquivos temporários
+*.log
+*.tmp
+*.swp
+*.bak
+*.old
+
+# Cache do Go
+/go-build/
+*/_testmain.go
+
+# Configurações locais de IDEs e editores
+.vscode/
+.idea/
+*.iml
+
+# Configurações e arquivos do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos ocultos ou de build
+.env
+
+#Outro arquivo
+/main_dev.go

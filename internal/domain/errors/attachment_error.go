@@ -6,10 +6,17 @@ func UnknownCreateAttachmentError(description string) error {
 	return error_common.NewCustomError(error_common.ERR_UNKNOWN,
 		"Falha ao cadastrar anexo", description, nil)
 }
+
 func UnknownFindAttachmentError(description string) error {
 	return error_common.NewCustomError(error_common.ERR_UNKNOWN,
 		"Falha ao buscar anexo", description, nil)
 }
+
+func NotFoundFindAttachmentError() error {
+	return error_common.NewCustomError(error_common.ERR_NOTFOUND,
+		"Falha ao buscar anexo.", "Anexo não encontrado.", nil)
+}
+
 func UnknownDeleteAttachmentError(description string) error {
 	return error_common.NewCustomError(error_common.ERR_UNKNOWN,
 		"Falha ao deletar anexo", description, nil)

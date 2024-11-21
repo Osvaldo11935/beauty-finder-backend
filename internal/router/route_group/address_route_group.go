@@ -12,6 +12,7 @@ func NewAddressRouteGroup(route *gin.RouterGroup, handler setup.HandlerSetup) {
 
 	r.POST("/user/:userId", handler.AddressHandler.Create)
 	r.POST("/appointment/:appointmentId", handler.AddressHandler.CreateAddressAppointment)
+	r.POST("/company/:companyId", handler.AddressHandler.CreateAddressCompany)
 
 	r.GET("/user/:userId", middlewares.Auth(), handler.AddressHandler.FindAddressByUserId)
 	r.GET("/appointment/:appointmentId", middlewares.Auth(), handler.AddressHandler.FindAddressByAppointmentId)

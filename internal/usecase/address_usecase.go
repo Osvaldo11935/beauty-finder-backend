@@ -27,6 +27,7 @@ type AddressUseCase struct {
 }
 
 func (uc *AddressUseCase) InsertAddress(userId uuid.UUID, request models_requests_posts.CreateAddressRequest) (*uuid.UUID, error) {
+
 	req := entities.NewAddress(userId, request)
 
 	createErr := uc.Repo.Insert(&req)
@@ -37,6 +38,7 @@ func (uc *AddressUseCase) InsertAddress(userId uuid.UUID, request models_request
 
 	return &req.ID, nil
 }
+
 func (uc *AddressUseCase) InsertAddressAppointment(appointmentId uuid.UUID, request models_requests_posts.CreateAddressRequest) (*uuid.UUID, error) {
 	req := entities.NewAddressAppointment(appointmentId, request)
 
@@ -48,6 +50,19 @@ func (uc *AddressUseCase) InsertAddressAppointment(appointmentId uuid.UUID, requ
 
 	return &req.ID, nil
 }
+
+func (uc *AddressUseCase) InsertAddressCompany(companyId uuid.UUID, request models_requests_posts.CreateAddressRequest) (*uuid.UUID, error) {
+	req := entities.NewAddressCompany(companyId, request)
+
+	createErr := uc.Repo.Insert(&req)
+
+	if createErr != nil {
+		return nil, errors.UnknownCreateAddressError(createErr.Error())
+	}
+
+	return &req.ID, nil
+}
+
 func (uc *AddressUseCase) SearchForAddressOnGoogleByLatitudeAndLongitude(ctx context.Context, lat float64, lng float64) (*models_responses.GeoCodeResponse, error) {
 	var address models_responses.GeoCodeResponse
 
@@ -85,6 +100,7 @@ func (uc *AddressUseCase) SearchForAddressOnGoogleByLatitudeAndLongitude(ctx con
 	}
 	return &address, nil
 }
+
 func (uc *AddressUseCase) FindAddressByUserId(userId uuid.UUID) (*entities.Address, error) {
 	var data entities.Address
 
@@ -100,6 +116,7 @@ func (uc *AddressUseCase) FindAddressByUserId(userId uuid.UUID) (*entities.Addre
 
 	return &data, nil
 }
+
 func (uc *AddressUseCase) FindAddressByAppointmentId(appointmentId uuid.UUID) (*entities.Address, error) {
 	var data entities.Address
 
@@ -115,6 +132,7 @@ func (uc *AddressUseCase) FindAddressByAppointmentId(appointmentId uuid.UUID) (*
 
 	return &data, nil
 }
+
 func (uc *AddressUseCase) UpdateAddress(userId uuid.UUID, request models_requests_puts.UpdateAddressRequest) error {
 
 	Address, findErr := uc.FindAddressByUserId(userId)
@@ -133,6 +151,7 @@ func (uc *AddressUseCase) UpdateAddress(userId uuid.UUID, request models_request
 
 	return nil
 }
+
 func (uc *AddressUseCase) DeleteAddress(userId uuid.UUID) error {
 
 	Address, findErr := uc.FindAddressByUserId(userId)
@@ -149,6 +168,7 @@ func (uc *AddressUseCase) DeleteAddress(userId uuid.UUID) error {
 
 	return nil
 }
+
 func Haversine(lat1, lon1, lat2, lon2 float64) float64 {
 	const R = 6371
 	latDistance := toRadians(lat2 - lat1)

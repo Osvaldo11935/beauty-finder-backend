@@ -20,6 +20,7 @@ type HandlerSetup struct {
 	RatingTypeHandler           handlers.RatingTypeHandler
 	UserRatingHandler           handlers.UserRatingHandler
 	DispatchNotificationHandler handlers.DispatchNotificationHandler
+	CompanyHandler              handlers.CompanyHandler
 }
 
 func NewHandlerSetup(setup *UseCaseSetup, otherSetup *OtherSetup) *HandlerSetup {
@@ -32,16 +33,17 @@ func NewHandlerSetup(setup *UseCaseSetup, otherSetup *OtherSetup) *HandlerSetup 
 		AttachmentHandler: handlers.AttachmentHandler{UseCase: setup.UseCaseAttachment,
 			FileManagerService: otherSetup.FileManager,
 		},
-		AttachmentTypeHandler:  handlers.AttachmentTypeHandler{UseCase: setup.UseCaseAttachmentType},
-		ServiceCategoryHandler: handlers.ServiceCategoryHandler{UseCase: setup.UseCaseServiceCategory},
-		MessageHandler:         handlers.MessageHandler{UseCase: setup.UseCaseMessage},
-		PersonHandler:          handlers.PersonHandler{UseCase: setup.UseCasePerson},
-		RoleHandler:            handlers.RoleHandler{UseCase: setup.UseCaseRole},
-		ServiceHandler:         handlers.ServiceHandler{UseCase: setup.UseCaseService},
-		ServicePriceHandler:    handlers.ServicePriceHandler{UseCase: setup.UseCaseServicePrice},
-		UserHandler:            handlers.UserHandler{UseCase: setup.UseCaseUser, FileManagerService: otherSetup.FileManager},
-		RatingTypeHandler:      handlers.RatingTypeHandler{UseCase: setup.UseCaseRatingType},
-		UserRatingHandler:      handlers.UserRatingHandler{UseCase: setup.UseCaseUserRating, FcmTokenUseCase: setup.UseCaseFcmToken},
+		AttachmentTypeHandler:       handlers.AttachmentTypeHandler{UseCase: setup.UseCaseAttachmentType},
+		ServiceCategoryHandler:      handlers.ServiceCategoryHandler{UseCase: setup.UseCaseServiceCategory},
+		MessageHandler:              handlers.MessageHandler{UseCase: setup.UseCaseMessage},
+		PersonHandler:               handlers.PersonHandler{UseCase: setup.UseCasePerson},
+		CompanyHandler:              handlers.CompanyHandler{UseCase: setup.UseCaseCompany},
+		RoleHandler:                 handlers.RoleHandler{UseCase: setup.UseCaseRole},
+		ServiceHandler:              handlers.ServiceHandler{UseCase: setup.UseCaseService},
+		ServicePriceHandler:         handlers.ServicePriceHandler{UseCase: setup.UseCaseServicePrice},
+		UserHandler:                 handlers.UserHandler{UseCase: setup.UseCaseUser, FileManagerService: otherSetup.FileManager},
+		RatingTypeHandler:           handlers.RatingTypeHandler{UseCase: setup.UseCaseRatingType},
+		UserRatingHandler:           handlers.UserRatingHandler{UseCase: setup.UseCaseUserRating, FcmTokenUseCase: setup.UseCaseFcmToken},
 		DispatchNotificationHandler: handlers.DispatchNotificationHandler{FcmTokenUseCase: setup.UseCaseFcmToken},
 	}
 }

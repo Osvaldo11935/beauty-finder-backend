@@ -10,6 +10,10 @@ func UnknownFindPersonError(description string) error {
 	return error_common.NewCustomError(error_common.ERR_UNKNOWN,
 		"Falha ao buscar dados pessoas", description, nil)
 }
+func NotFoundFindPersonError() error {
+	return error_common.NewCustomError(error_common.ERR_NOTFOUND,
+		"Falha ao buscar dados pessoas", "Dados pessoas não encontrado", nil)
+}
 func UnknownDeletePersonError(description string) error {
 	return error_common.NewCustomError(error_common.ERR_UNKNOWN,
 		"Falha ao deletar dados pessoas", description, nil)

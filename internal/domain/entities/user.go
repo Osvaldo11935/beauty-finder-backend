@@ -1,6 +1,8 @@
 package entities
 
 import (
+	models_requests_posts "src/internal/delivery/http/models/requests/posts"
+	models_requests_puts "src/internal/delivery/http/models/requests/put"
 	"src/internal/domain/primitives"
 
 	"github.com/google/uuid"
@@ -14,6 +16,7 @@ type User struct {
 	Password            *string            `gorm:"column:Password" json:"password"`
 	PhoneNumber         string             `gorm:"column:PhoneNumber" json:"phoneNumber"`
 	RoleId              uuid.UUID          `gorm:"column:RoleId" json:"roleId"`
+	CompanyId           *uuid.UUID         `gorm:"column:CompanyId" json:"companyId"`
 	Person              *Person            `gorm:"foreignKey:UserId;references:ID" json:"person"`
 	ServicesProvided    []*ServiceProvider `gorm:"foreignKey:ProviderId;references:ID" json:"servicesProvided"`
 	Conn                *websocket.Conn    `gorm:"-"`
@@ -26,6 +29,7 @@ type User struct {
 	FcmToken            []*FcmToken        `gorm:"foreignKey:UserId;references:Id" json:"fcmToken"`
 	UserEvaluator       *UserRating        `gorm:"foreignKey:UserEvaluatorId;references:Id" json:"userEvaluator"`
 	UserAvaluated       *UserRating        `gorm:"foreignKey:UserAvaluatedId;references:Id" json:"userAvaluated"`
+	Company             *Company
 	Role                *Role
 }
 
@@ -33,34 +37,35 @@ func (s *User) TableName() string {
 	return "User"
 }
 
-func NewUser(email *string, userName *string, password *string, phoneNumber string, roleId uuid.UUID) User {
+func NewUser(roleId uuid.UUID, request models_requests_posts.CreateUserRequest) User {
 	body := User{
 		BaseAuditableEntity: *primitives.NewBaseAuditableEntity(),
-		Email:               email,
-		UserName:            userName,
-		Password:            password,
-		PhoneNumber:         phoneNumber,
+		Email:               request.Email,
+		UserName:            request.UserName,
+		Password:            request.Password,
+		PhoneNumber:         request.PhoneNumber,
 		RoleId:              roleId,
+		CompanyId:           request.CompanyId,
 	}
 
 	return body
 }
 
-func (s *User) Update(email *string, userName *string, password *string, phoneNumber *string, roleId *uuid.UUID) {
-	if email != nil {
-		s.Email = email
+func (s *User) Update(request models_requests_puts.UpdateUserRequest) {
+	if request.Email != nil {
+		s.Email = request.Email
 	}
-	if userName != nil {
-		s.UserName = userName
+	if request.UserName != nil {
+		s.UserName = request.UserName
 	}
-	if password != nil {
-		s.Password = password
+	if request.Password != nil {
+		s.Password = request.Password
 	}
-	if phoneNumber != nil {
-		s.PhoneNumber = *phoneNumber
+	if request.PhoneNumber != nil {
+		s.PhoneNumber = *request.PhoneNumber
 	}
-	if roleId != nil {
-		s.RoleId = *roleId
+	if request.RoleId != nil {
+		s.RoleId = *request.RoleId
 	}
 }
 

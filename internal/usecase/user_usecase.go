@@ -24,12 +24,7 @@ type UserUseCase struct {
 }
 
 func (uc *UserUseCase) InsertUser(roleId uuid.UUID, request models_requests_posts.CreateUserRequest) (*uuid.UUID, error) {
-	req := entities.NewUser(
-		request.Email,
-		request.UserName,
-		request.Password,
-		request.PhoneNumber,
-		roleId)
+	req := entities.NewUser(roleId, request)
 
 	createErr := uc.Repo.Insert(req)
 
@@ -109,6 +104,9 @@ func (uc *UserUseCase) FindAllUser() ([]entities.User, error) {
 		Find(&data).Error
 
 	if findErr != nil {
+		if err.Is(findErr, gorm.ErrRecordNotFound) {
+			return nil, errors.NotFoundFindUserError()
+		}
 		return nil, errors.UnknownFindUserError(findErr.Error())
 	}
 
@@ -275,12 +273,7 @@ func (uc *UserUseCase) UpdateUser(UserId uuid.UUID, request models_requests_puts
 		return findErr
 	}
 
-	User.Update(
-		request.Email,
-		request.Email,
-		request.Password,
-		request.PhoneNumber,
-		request.RoleId)
+	User.Update(request)
 
 	updateErr := uc.Repo.Update(User)
 
